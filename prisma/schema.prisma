@@ -619,3 +619,110 @@ model ActivityLog {
 
   @@map("activity_logs")
 }
+
+// ======================================================
+// ⚙️ 14. SETTINGS SYSTEM
+// ======================================================
+
+model Setting {
+  id        String   @id @default(uuid())
+  shopName  String?   @map("shop_name")
+  logo      String?
+  icon      String?
+  copyrightYear String? @map("copyright_year") @default("2026")
+  parentCompany       String? @map("parent_company")
+  parentCompanyLink   String? @map("parent_company_link")
+  slogan    String?
+  contactNumber Json?  @map("contact_number")
+  email     Json?
+  socialContact Json?  @map("social_contact")
+  currency  String   @default("BDT")
+  language  String   @default("en")
+  fraudCheckApiKey      String? @map("fraud_check_api_key")
+  isFraudChecking       Boolean @default(false) @map("is_fraud_checking")
+  fraudCheckingThreshold  Int     @default(0) @map("fraud_checking_threshold")
+  fraudCheckingSuccessRate Decimal? @map("fraud_checking_success_rate") @db.Decimal(5, 2)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  @@map("settings")
+}
+
+// ======================================================
+// 📋 15. POLICIES SYSTEM
+// ======================================================
+
+model Policy {
+  id         String @id @default(uuid())
+  delivery   Json?
+  return     Json?
+  refund     Json?
+  cancellation Json?
+  privacy    Json?
+  terms      Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  @@map("policies")
+}
+
+// ======================================================
+// 📐 16. SECTIONS SYSTEM
+// ======================================================
+
+model Section {
+  id        String   @id @default(uuid())
+  position  Int
+  title     String
+  page      String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  campaigns Campaign[]
+
+  @@map("sections")
+}
+
+// ======================================================
+// 🎯 17. CAMPAIGNS SYSTEM
+// ======================================================
+
+model Campaign {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  hasDiscount Boolean  @default(false) @map("has_discount")
+  discountId  String?  @map("discount_id")
+  startAt     DateTime @map("start_at")
+  endAt       DateTime @map("end_at")
+  status      String   @default("active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  section   Section         @relation(fields: [sectionId], references: [id])
+  sectionId String          @map("section_id")
+  images    CampaignImage[]
+
+  @@map("campaigns")
+}
+
+// ======================================================
+// 🖼️ 18. CAMPAIGN IMAGES SYSTEM
+// ======================================================
+
+model CampaignImage {
+  id         String   @id @default(uuid())
+  images     Json?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  campaign   Campaign @relation(fields: [campaignId], references: [id])
+  campaignId String   @map("campaign_id")
+
+  @@map("campaign_images")
+}

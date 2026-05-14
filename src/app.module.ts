@@ -26,6 +26,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { TagsModule } from './tags/tags.module';
 import { UnitModule } from './unit/unit.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { UnitModule } from './unit/unit.module';
     ActivityLogModule,
     TagsModule,
     UnitModule,
+    SettingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -82,7 +82,12 @@ export const ModelName = {
   Coupon: 'Coupon',
   Review: 'Review',
   Notification: 'Notification',
-  ActivityLog: 'ActivityLog'
+  ActivityLog: 'ActivityLog',
+  Setting: 'Setting',
+  Policy: 'Policy',
+  Section: 'Section',
+  Campaign: 'Campaign',
+  CampaignImage: 'CampaignImage'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -491,6 +496,86 @@ export const ActivityLogScalarFieldEnum = {
 } as const
 
 export type ActivityLogScalarFieldEnum = (typeof ActivityLogScalarFieldEnum)[keyof typeof ActivityLogScalarFieldEnum]
+
+
+export const SettingScalarFieldEnum = {
+  id: 'id',
+  shopName: 'shopName',
+  logo: 'logo',
+  icon: 'icon',
+  copyrightYear: 'copyrightYear',
+  parentCompany: 'parentCompany',
+  parentCompanyLink: 'parentCompanyLink',
+  slogan: 'slogan',
+  contactNumber: 'contactNumber',
+  email: 'email',
+  socialContact: 'socialContact',
+  currency: 'currency',
+  language: 'language',
+  fraudCheckApiKey: 'fraudCheckApiKey',
+  isFraudChecking: 'isFraudChecking',
+  fraudCheckingThreshold: 'fraudCheckingThreshold',
+  fraudCheckingSuccessRate: 'fraudCheckingSuccessRate',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SettingScalarFieldEnum = (typeof SettingScalarFieldEnum)[keyof typeof SettingScalarFieldEnum]
+
+
+export const PolicyScalarFieldEnum = {
+  id: 'id',
+  delivery: 'delivery',
+  return: 'return',
+  refund: 'refund',
+  cancellation: 'cancellation',
+  privacy: 'privacy',
+  terms: 'terms',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type PolicyScalarFieldEnum = (typeof PolicyScalarFieldEnum)[keyof typeof PolicyScalarFieldEnum]
+
+
+export const SectionScalarFieldEnum = {
+  id: 'id',
+  position: 'position',
+  title: 'title',
+  page: 'page',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type SectionScalarFieldEnum = (typeof SectionScalarFieldEnum)[keyof typeof SectionScalarFieldEnum]
+
+
+export const CampaignScalarFieldEnum = {
+  id: 'id',
+  title: 'title',
+  description: 'description',
+  hasDiscount: 'hasDiscount',
+  discountId: 'discountId',
+  startAt: 'startAt',
+  endAt: 'endAt',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  sectionId: 'sectionId'
+} as const
+
+export type CampaignScalarFieldEnum = (typeof CampaignScalarFieldEnum)[keyof typeof CampaignScalarFieldEnum]
+
+
+export const CampaignImageScalarFieldEnum = {
+  id: 'id',
+  images: 'images',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  campaignId: 'campaignId'
+} as const
+
+export type CampaignImageScalarFieldEnum = (typeof CampaignImageScalarFieldEnum)[keyof typeof CampaignImageScalarFieldEnum]
 
 
 export const SortOrder = {

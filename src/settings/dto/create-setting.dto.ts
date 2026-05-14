@@ -1,0 +1,84 @@
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
+import { IsString, IsOptional, IsBoolean, IsInt, IsNumber, IsObject } from "class-validator";
+
+export class CreateSettingDto {
+  @ApiPropertyOptional({ description: 'Shop Name' })
+  @IsString()
+  @IsOptional()
+  shopName?: string;
+
+  @ApiPropertyOptional({ description: 'Logo URL' })
+  @IsString()
+  @IsOptional()
+  logo?: string;
+
+  @ApiPropertyOptional({ description: 'Icon URL' })
+  @IsString()
+  @IsOptional()
+  icon?: string;
+
+  @ApiPropertyOptional({ description: 'Copyright Year', default: '2026' })
+  @IsString()
+  @IsOptional()
+  copyrightYear?: string;
+
+  @ApiPropertyOptional({ description: 'Parent Company' })
+  @IsString()
+  @IsOptional()
+  parentCompany?: string;
+
+  @ApiPropertyOptional({ description: 'Parent Company Link' })
+  @IsString()
+  @IsOptional()
+  parentCompanyLink?: string;
+
+  @ApiPropertyOptional({ description: 'Slogan' })
+  @IsString()
+  @IsOptional()
+  slogan?: string;
+
+  @ApiPropertyOptional({ description: 'Contact Number (JSON)' })
+  @IsObject()
+  @IsOptional()
+  contactNumber?: any;
+
+  @ApiPropertyOptional({ description: 'Email (JSON)' })
+  @IsObject()
+  @IsOptional()
+  email?: any;
+
+  @ApiPropertyOptional({ description: 'Social Contact (JSON)' })
+  @IsObject()
+  @IsOptional()
+  socialContact?: any;
+
+  @ApiPropertyOptional({ description: 'Currency', default: 'BDT' })
+  @IsString()
+  @IsOptional()
+  currency?: string;
+
+  @ApiPropertyOptional({ description: 'Language', default: 'en' })
+  @IsString()
+  @IsOptional()
+  language?: string;
+
+  @ApiPropertyOptional({ description: 'Fraud Check API Key' })
+  @IsString()
+  @IsOptional()
+  fraudCheckApiKey?: string;
+
+  @ApiPropertyOptional({ description: 'Is Fraud Checking Enabled', default: false })
+  @IsBoolean()
+  @IsOptional()
+  isFraudChecking?: boolean;
+
+  @ApiPropertyOptional({ description: 'Fraud Checking Threshold', default: 0 })
+  @IsInt()
+  @IsOptional()
+  fraudCheckingThreshold?: number;
+
+  @ApiPropertyOptional({ description: 'Fraud Checking Success Rate' })
+  @IsNumber()
+  @IsOptional()
+  fraudCheckingSuccessRate?: number;
+}
