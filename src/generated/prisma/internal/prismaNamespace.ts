@@ -3627,6 +3627,14 @@ export const SettingScalarFieldEnum = {
   isFraudChecking: 'isFraudChecking',
   fraudCheckingThreshold: 'fraudCheckingThreshold',
   fraudCheckingSuccessRate: 'fraudCheckingSuccessRate',
+  deliveryChargeInside: 'deliveryChargeInside',
+  deliveryChargeOutside: 'deliveryChargeOutside',
+  deliveryChargeNearCity: 'deliveryChargeNearCity',
+  youtubeUrl: 'youtubeUrl',
+  youtubeThumbnailImage: 'youtubeThumbnailImage',
+  youtubeTitle: 'youtubeTitle',
+  youtubeDescription: 'youtubeDescription',
+  youtubeMetaData: 'youtubeMetaData',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const

@@ -29,11 +29,17 @@ export type AggregateSetting = {
 export type SettingAvgAggregateOutputType = {
   fraudCheckingThreshold: number | null
   fraudCheckingSuccessRate: runtime.Decimal | null
+  deliveryChargeInside: runtime.Decimal | null
+  deliveryChargeOutside: runtime.Decimal | null
+  deliveryChargeNearCity: runtime.Decimal | null
 }
 
 export type SettingSumAggregateOutputType = {
   fraudCheckingThreshold: number | null
   fraudCheckingSuccessRate: runtime.Decimal | null
+  deliveryChargeInside: runtime.Decimal | null
+  deliveryChargeOutside: runtime.Decimal | null
+  deliveryChargeNearCity: runtime.Decimal | null
 }
 
 export type SettingMinAggregateOutputType = {
@@ -51,6 +57,13 @@ export type SettingMinAggregateOutputType = {
   isFraudChecking: boolean | null
   fraudCheckingThreshold: number | null
   fraudCheckingSuccessRate: runtime.Decimal | null
+  deliveryChargeInside: runtime.Decimal | null
+  deliveryChargeOutside: runtime.Decimal | null
+  deliveryChargeNearCity: runtime.Decimal | null
+  youtubeUrl: string | null
+  youtubeThumbnailImage: string | null
+  youtubeTitle: string | null
+  youtubeDescription: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -70,6 +83,13 @@ export type SettingMaxAggregateOutputType = {
   isFraudChecking: boolean | null
   fraudCheckingThreshold: number | null
   fraudCheckingSuccessRate: runtime.Decimal | null
+  deliveryChargeInside: runtime.Decimal | null
+  deliveryChargeOutside: runtime.Decimal | null
+  deliveryChargeNearCity: runtime.Decimal | null
+  youtubeUrl: string | null
+  youtubeThumbnailImage: string | null
+  youtubeTitle: string | null
+  youtubeDescription: string | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -92,6 +112,14 @@ export type SettingCountAggregateOutputType = {
   isFraudChecking: number
   fraudCheckingThreshold: number
   fraudCheckingSuccessRate: number
+  deliveryChargeInside: number
+  deliveryChargeOutside: number
+  deliveryChargeNearCity: number
+  youtubeUrl: number
+  youtubeThumbnailImage: number
+  youtubeTitle: number
+  youtubeDescription: number
+  youtubeMetaData: number
   createdAt: number
   updatedAt: number
   _all: number
@@ -101,11 +129,17 @@ export type SettingCountAggregateOutputType = {
 export type SettingAvgAggregateInputType = {
   fraudCheckingThreshold?: true
   fraudCheckingSuccessRate?: true
+  deliveryChargeInside?: true
+  deliveryChargeOutside?: true
+  deliveryChargeNearCity?: true
 }
 
 export type SettingSumAggregateInputType = {
   fraudCheckingThreshold?: true
   fraudCheckingSuccessRate?: true
+  deliveryChargeInside?: true
+  deliveryChargeOutside?: true
+  deliveryChargeNearCity?: true
 }
 
 export type SettingMinAggregateInputType = {
@@ -123,6 +157,13 @@ export type SettingMinAggregateInputType = {
   isFraudChecking?: true
   fraudCheckingThreshold?: true
   fraudCheckingSuccessRate?: true
+  deliveryChargeInside?: true
+  deliveryChargeOutside?: true
+  deliveryChargeNearCity?: true
+  youtubeUrl?: true
+  youtubeThumbnailImage?: true
+  youtubeTitle?: true
+  youtubeDescription?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -142,6 +183,13 @@ export type SettingMaxAggregateInputType = {
   isFraudChecking?: true
   fraudCheckingThreshold?: true
   fraudCheckingSuccessRate?: true
+  deliveryChargeInside?: true
+  deliveryChargeOutside?: true
+  deliveryChargeNearCity?: true
+  youtubeUrl?: true
+  youtubeThumbnailImage?: true
+  youtubeTitle?: true
+  youtubeDescription?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -164,6 +212,14 @@ export type SettingCountAggregateInputType = {
   isFraudChecking?: true
   fraudCheckingThreshold?: true
   fraudCheckingSuccessRate?: true
+  deliveryChargeInside?: true
+  deliveryChargeOutside?: true
+  deliveryChargeNearCity?: true
+  youtubeUrl?: true
+  youtubeThumbnailImage?: true
+  youtubeTitle?: true
+  youtubeDescription?: true
+  youtubeMetaData?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -273,6 +329,14 @@ export type SettingGroupByOutputType = {
   isFraudChecking: boolean
   fraudCheckingThreshold: number
   fraudCheckingSuccessRate: runtime.Decimal | null
+  deliveryChargeInside: runtime.Decimal | null
+  deliveryChargeOutside: runtime.Decimal | null
+  deliveryChargeNearCity: runtime.Decimal | null
+  youtubeUrl: string | null
+  youtubeThumbnailImage: string | null
+  youtubeTitle: string | null
+  youtubeDescription: string | null
+  youtubeMetaData: runtime.JsonValue | null
   createdAt: Date
   updatedAt: Date
   _count: SettingCountAggregateOutputType | null
@@ -318,6 +382,14 @@ export type SettingWhereInput = {
   isFraudChecking?: Prisma.BoolFilter<"Setting"> | boolean
   fraudCheckingThreshold?: Prisma.IntFilter<"Setting"> | number
   fraudCheckingSuccessRate?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeThumbnailImage?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeTitle?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeDescription?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeMetaData?: Prisma.JsonNullableFilter<"Setting">
   createdAt?: Prisma.DateTimeFilter<"Setting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Setting"> | Date | string
 }
@@ -340,6 +412,14 @@ export type SettingOrderByWithRelationInput = {
   isFraudChecking?: Prisma.SortOrder
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeThumbnailImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeMetaData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -365,6 +445,14 @@ export type SettingWhereUniqueInput = Prisma.AtLeast<{
   isFraudChecking?: Prisma.BoolFilter<"Setting"> | boolean
   fraudCheckingThreshold?: Prisma.IntFilter<"Setting"> | number
   fraudCheckingSuccessRate?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.DecimalNullableFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeThumbnailImage?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeTitle?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeDescription?: Prisma.StringNullableFilter<"Setting"> | string | null
+  youtubeMetaData?: Prisma.JsonNullableFilter<"Setting">
   createdAt?: Prisma.DateTimeFilter<"Setting"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Setting"> | Date | string
 }, "id">
@@ -387,6 +475,14 @@ export type SettingOrderByWithAggregationInput = {
   isFraudChecking?: Prisma.SortOrder
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrderInput | Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeUrl?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeThumbnailImage?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  youtubeMetaData?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.SettingCountOrderByAggregateInput
@@ -417,6 +513,14 @@ export type SettingScalarWhereWithAggregatesInput = {
   isFraudChecking?: Prisma.BoolWithAggregatesFilter<"Setting"> | boolean
   fraudCheckingThreshold?: Prisma.IntWithAggregatesFilter<"Setting"> | number
   fraudCheckingSuccessRate?: Prisma.DecimalNullableWithAggregatesFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.DecimalNullableWithAggregatesFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.DecimalNullableWithAggregatesFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.DecimalNullableWithAggregatesFilter<"Setting"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.StringNullableWithAggregatesFilter<"Setting"> | string | null
+  youtubeThumbnailImage?: Prisma.StringNullableWithAggregatesFilter<"Setting"> | string | null
+  youtubeTitle?: Prisma.StringNullableWithAggregatesFilter<"Setting"> | string | null
+  youtubeDescription?: Prisma.StringNullableWithAggregatesFilter<"Setting"> | string | null
+  youtubeMetaData?: Prisma.JsonNullableWithAggregatesFilter<"Setting">
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Setting"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Setting"> | Date | string
 }
@@ -439,6 +543,14 @@ export type SettingCreateInput = {
   isFraudChecking?: boolean
   fraudCheckingThreshold?: number
   fraudCheckingSuccessRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: string | null
+  youtubeThumbnailImage?: string | null
+  youtubeTitle?: string | null
+  youtubeDescription?: string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -461,6 +573,14 @@ export type SettingUncheckedCreateInput = {
   isFraudChecking?: boolean
   fraudCheckingThreshold?: number
   fraudCheckingSuccessRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: string | null
+  youtubeThumbnailImage?: string | null
+  youtubeTitle?: string | null
+  youtubeDescription?: string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -483,6 +603,14 @@ export type SettingUpdateInput = {
   isFraudChecking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fraudCheckingThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   fraudCheckingSuccessRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeThumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -505,6 +633,14 @@ export type SettingUncheckedUpdateInput = {
   isFraudChecking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fraudCheckingThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   fraudCheckingSuccessRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeThumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -527,6 +663,14 @@ export type SettingCreateManyInput = {
   isFraudChecking?: boolean
   fraudCheckingThreshold?: number
   fraudCheckingSuccessRate?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: string | null
+  youtubeThumbnailImage?: string | null
+  youtubeTitle?: string | null
+  youtubeDescription?: string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -549,6 +693,14 @@ export type SettingUpdateManyMutationInput = {
   isFraudChecking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fraudCheckingThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   fraudCheckingSuccessRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeThumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -571,6 +723,14 @@ export type SettingUncheckedUpdateManyInput = {
   isFraudChecking?: Prisma.BoolFieldUpdateOperationsInput | boolean
   fraudCheckingThreshold?: Prisma.IntFieldUpdateOperationsInput | number
   fraudCheckingSuccessRate?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeInside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeOutside?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  deliveryChargeNearCity?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  youtubeUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeThumbnailImage?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  youtubeMetaData?: Prisma.NullableJsonNullValueInput | runtime.InputJsonValue
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -593,6 +753,14 @@ export type SettingCountOrderByAggregateInput = {
   isFraudChecking?: Prisma.SortOrder
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrder
+  youtubeUrl?: Prisma.SortOrder
+  youtubeThumbnailImage?: Prisma.SortOrder
+  youtubeTitle?: Prisma.SortOrder
+  youtubeDescription?: Prisma.SortOrder
+  youtubeMetaData?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -600,6 +768,9 @@ export type SettingCountOrderByAggregateInput = {
 export type SettingAvgOrderByAggregateInput = {
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrder
 }
 
 export type SettingMaxOrderByAggregateInput = {
@@ -617,6 +788,13 @@ export type SettingMaxOrderByAggregateInput = {
   isFraudChecking?: Prisma.SortOrder
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrder
+  youtubeUrl?: Prisma.SortOrder
+  youtubeThumbnailImage?: Prisma.SortOrder
+  youtubeTitle?: Prisma.SortOrder
+  youtubeDescription?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -636,6 +814,13 @@ export type SettingMinOrderByAggregateInput = {
   isFraudChecking?: Prisma.SortOrder
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrder
+  youtubeUrl?: Prisma.SortOrder
+  youtubeThumbnailImage?: Prisma.SortOrder
+  youtubeTitle?: Prisma.SortOrder
+  youtubeDescription?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -643,6 +828,9 @@ export type SettingMinOrderByAggregateInput = {
 export type SettingSumOrderByAggregateInput = {
   fraudCheckingThreshold?: Prisma.SortOrder
   fraudCheckingSuccessRate?: Prisma.SortOrder
+  deliveryChargeInside?: Prisma.SortOrder
+  deliveryChargeOutside?: Prisma.SortOrder
+  deliveryChargeNearCity?: Prisma.SortOrder
 }
 
 
@@ -665,6 +853,14 @@ export type SettingSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   isFraudChecking?: boolean
   fraudCheckingThreshold?: boolean
   fraudCheckingSuccessRate?: boolean
+  deliveryChargeInside?: boolean
+  deliveryChargeOutside?: boolean
+  deliveryChargeNearCity?: boolean
+  youtubeUrl?: boolean
+  youtubeThumbnailImage?: boolean
+  youtubeTitle?: boolean
+  youtubeDescription?: boolean
+  youtubeMetaData?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["setting"]>
@@ -687,6 +883,14 @@ export type SettingSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isFraudChecking?: boolean
   fraudCheckingThreshold?: boolean
   fraudCheckingSuccessRate?: boolean
+  deliveryChargeInside?: boolean
+  deliveryChargeOutside?: boolean
+  deliveryChargeNearCity?: boolean
+  youtubeUrl?: boolean
+  youtubeThumbnailImage?: boolean
+  youtubeTitle?: boolean
+  youtubeDescription?: boolean
+  youtubeMetaData?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["setting"]>
@@ -709,6 +913,14 @@ export type SettingSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   isFraudChecking?: boolean
   fraudCheckingThreshold?: boolean
   fraudCheckingSuccessRate?: boolean
+  deliveryChargeInside?: boolean
+  deliveryChargeOutside?: boolean
+  deliveryChargeNearCity?: boolean
+  youtubeUrl?: boolean
+  youtubeThumbnailImage?: boolean
+  youtubeTitle?: boolean
+  youtubeDescription?: boolean
+  youtubeMetaData?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }, ExtArgs["result"]["setting"]>
@@ -731,11 +943,19 @@ export type SettingSelectScalar = {
   isFraudChecking?: boolean
   fraudCheckingThreshold?: boolean
   fraudCheckingSuccessRate?: boolean
+  deliveryChargeInside?: boolean
+  deliveryChargeOutside?: boolean
+  deliveryChargeNearCity?: boolean
+  youtubeUrl?: boolean
+  youtubeThumbnailImage?: boolean
+  youtubeTitle?: boolean
+  youtubeDescription?: boolean
+  youtubeMetaData?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type SettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shopName" | "logo" | "icon" | "copyrightYear" | "parentCompany" | "parentCompanyLink" | "slogan" | "contactNumber" | "email" | "socialContact" | "currency" | "language" | "fraudCheckApiKey" | "isFraudChecking" | "fraudCheckingThreshold" | "fraudCheckingSuccessRate" | "createdAt" | "updatedAt", ExtArgs["result"]["setting"]>
+export type SettingOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "shopName" | "logo" | "icon" | "copyrightYear" | "parentCompany" | "parentCompanyLink" | "slogan" | "contactNumber" | "email" | "socialContact" | "currency" | "language" | "fraudCheckApiKey" | "isFraudChecking" | "fraudCheckingThreshold" | "fraudCheckingSuccessRate" | "deliveryChargeInside" | "deliveryChargeOutside" | "deliveryChargeNearCity" | "youtubeUrl" | "youtubeThumbnailImage" | "youtubeTitle" | "youtubeDescription" | "youtubeMetaData" | "createdAt" | "updatedAt", ExtArgs["result"]["setting"]>
 
 export type $SettingPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Setting"
@@ -758,6 +978,14 @@ export type $SettingPayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     isFraudChecking: boolean
     fraudCheckingThreshold: number
     fraudCheckingSuccessRate: runtime.Decimal | null
+    deliveryChargeInside: runtime.Decimal | null
+    deliveryChargeOutside: runtime.Decimal | null
+    deliveryChargeNearCity: runtime.Decimal | null
+    youtubeUrl: string | null
+    youtubeThumbnailImage: string | null
+    youtubeTitle: string | null
+    youtubeDescription: string | null
+    youtubeMetaData: runtime.JsonValue | null
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["setting"]>
@@ -1200,6 +1428,14 @@ export interface SettingFieldRefs {
   readonly isFraudChecking: Prisma.FieldRef<"Setting", 'Boolean'>
   readonly fraudCheckingThreshold: Prisma.FieldRef<"Setting", 'Int'>
   readonly fraudCheckingSuccessRate: Prisma.FieldRef<"Setting", 'Decimal'>
+  readonly deliveryChargeInside: Prisma.FieldRef<"Setting", 'Decimal'>
+  readonly deliveryChargeOutside: Prisma.FieldRef<"Setting", 'Decimal'>
+  readonly deliveryChargeNearCity: Prisma.FieldRef<"Setting", 'Decimal'>
+  readonly youtubeUrl: Prisma.FieldRef<"Setting", 'String'>
+  readonly youtubeThumbnailImage: Prisma.FieldRef<"Setting", 'String'>
+  readonly youtubeTitle: Prisma.FieldRef<"Setting", 'String'>
+  readonly youtubeDescription: Prisma.FieldRef<"Setting", 'String'>
+  readonly youtubeMetaData: Prisma.FieldRef<"Setting", 'Json'>
   readonly createdAt: Prisma.FieldRef<"Setting", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Setting", 'DateTime'>
 }
