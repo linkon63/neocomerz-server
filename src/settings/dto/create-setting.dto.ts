@@ -81,4 +81,44 @@ export class CreateSettingDto {
   @IsNumber()
   @IsOptional()
   fraudCheckingSuccessRate?: number;
+
+  @ApiPropertyOptional({ description: 'Delivery charge inside' })
+  @IsNumber()
+  @IsOptional()
+  deliveryChargeInside?: number;
+
+  @ApiPropertyOptional({ description: 'Delivery charge outside' })
+  @IsNumber()
+  @IsOptional()
+  deliveryChargeOutside?: number;
+
+  @ApiPropertyOptional({ description: 'Delivery charge near city' })
+  @IsNumber()
+  @IsOptional()
+  deliveryChargeNearCity?: number;
+
+  @ApiPropertyOptional({ description: 'YouTube URL' })
+  @IsString()
+  @IsOptional()
+  youtubeUrl?: string;
+
+  @ApiPropertyOptional({ description: 'YouTube thumbnail image' })
+  @IsString()
+  @IsOptional()
+  youtubeThumbnailImage?: string;
+
+  @ApiPropertyOptional({ description: 'YouTube title' })
+  @IsString()
+  @IsOptional()
+  youtubeTitle?: string;
+
+  @ApiPropertyOptional({ description: 'YouTube description' })
+  @IsString()
+  @IsOptional()
+  youtubeDescription?: string;
+
+  @ApiPropertyOptional({ description: 'YouTube meta data (JSON)' })
+  @IsObject()
+  @IsOptional()
+  youtubeMetaData?: any;
 }
