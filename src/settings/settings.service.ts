@@ -7,12 +7,6 @@ import { PrismaService } from '../prisma/prisma.service';
 export class SettingsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createSettingDto: CreateSettingDto) {
-    return this.prisma.setting.create({
-      data: createSettingDto,
-    });
-  }
-
   async findOne(id: string) {
     const setting = await this.prisma.setting.findUnique({
       where: { id },
@@ -26,24 +20,16 @@ export class SettingsService {
   }
 
   async findFirst() {
-    const setting = await this.prisma.setting.findFirst();
-    return setting;
+    return this.prisma.setting.findFirst();
   }
 
-  async update(id: string, updateSettingDto: UpdateSettingDto) {
-    await this.findOne(id);
-
-    return this.prisma.setting.update({
-      where: { id },
-      data: updateSettingDto,
-    });
-  }
-
-  async updateFirst(updateSettingDto: UpdateSettingDto) {
+  async upsert(updateSettingDto: UpdateSettingDto) {
     const setting = await this.findFirst();
-    
+
     if (!setting) {
-      return this.create(updateSettingDto as CreateSettingDto);
+      return this.prisma.setting.create({
+        data: updateSettingDto as CreateSettingDto,
+      });
     }
 
     return this.prisma.setting.update({
