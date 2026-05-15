@@ -190,7 +190,7 @@ export type CampaignGroupByOutputType = {
   hasDiscount: boolean
   discountId: string | null
   startAt: Date
-  endAt: Date
+  endAt: Date | null
   status: string
   createdAt: Date
   updatedAt: Date
@@ -225,13 +225,14 @@ export type CampaignWhereInput = {
   hasDiscount?: Prisma.BoolFilter<"Campaign"> | boolean
   discountId?: Prisma.StringNullableFilter<"Campaign"> | string | null
   startAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
-  endAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  endAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   sectionId?: Prisma.StringFilter<"Campaign"> | string
   section?: Prisma.XOR<Prisma.SectionScalarRelationFilter, Prisma.SectionWhereInput>
   images?: Prisma.CampaignImageListRelationFilter
+  discount?: Prisma.XOR<Prisma.ProductDiscountNullableScalarRelationFilter, Prisma.ProductDiscountWhereInput> | null
 }
 
 export type CampaignOrderByWithRelationInput = {
@@ -241,13 +242,14 @@ export type CampaignOrderByWithRelationInput = {
   hasDiscount?: Prisma.SortOrder
   discountId?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
-  endAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   sectionId?: Prisma.SortOrder
   section?: Prisma.SectionOrderByWithRelationInput
   images?: Prisma.CampaignImageOrderByRelationAggregateInput
+  discount?: Prisma.ProductDiscountOrderByWithRelationInput
 }
 
 export type CampaignWhereUniqueInput = Prisma.AtLeast<{
@@ -260,13 +262,14 @@ export type CampaignWhereUniqueInput = Prisma.AtLeast<{
   hasDiscount?: Prisma.BoolFilter<"Campaign"> | boolean
   discountId?: Prisma.StringNullableFilter<"Campaign"> | string | null
   startAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
-  endAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  endAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   sectionId?: Prisma.StringFilter<"Campaign"> | string
   section?: Prisma.XOR<Prisma.SectionScalarRelationFilter, Prisma.SectionWhereInput>
   images?: Prisma.CampaignImageListRelationFilter
+  discount?: Prisma.XOR<Prisma.ProductDiscountNullableScalarRelationFilter, Prisma.ProductDiscountWhereInput> | null
 }, "id">
 
 export type CampaignOrderByWithAggregationInput = {
@@ -276,7 +279,7 @@ export type CampaignOrderByWithAggregationInput = {
   hasDiscount?: Prisma.SortOrder
   discountId?: Prisma.SortOrderInput | Prisma.SortOrder
   startAt?: Prisma.SortOrder
-  endAt?: Prisma.SortOrder
+  endAt?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
@@ -296,7 +299,7 @@ export type CampaignScalarWhereWithAggregatesInput = {
   hasDiscount?: Prisma.BoolWithAggregatesFilter<"Campaign"> | boolean
   discountId?: Prisma.StringNullableWithAggregatesFilter<"Campaign"> | string | null
   startAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
-  endAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
+  endAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Campaign"> | Date | string | null
   status?: Prisma.StringWithAggregatesFilter<"Campaign"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Campaign"> | Date | string
@@ -308,14 +311,14 @@ export type CampaignCreateInput = {
   title: string
   description?: string | null
   hasDiscount?: boolean
-  discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutCampaignsInput
   images?: Prisma.CampaignImageCreateNestedManyWithoutCampaignInput
+  discount?: Prisma.ProductDiscountCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateInput = {
@@ -325,7 +328,7 @@ export type CampaignUncheckedCreateInput = {
   hasDiscount?: boolean
   discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -338,14 +341,14 @@ export type CampaignUpdateInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutCampaignsNestedInput
   images?: Prisma.CampaignImageUpdateManyWithoutCampaignNestedInput
+  discount?: Prisma.ProductDiscountUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateInput = {
@@ -355,7 +358,7 @@ export type CampaignUncheckedUpdateInput = {
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,7 +373,7 @@ export type CampaignCreateManyInput = {
   hasDiscount?: boolean
   discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -382,9 +385,8 @@ export type CampaignUpdateManyMutationInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -397,7 +399,7 @@ export type CampaignUncheckedUpdateManyInput = {
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -517,18 +519,60 @@ export type CampaignUpdateOneRequiredWithoutImagesNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.CampaignUpdateToOneWithWhereWithoutImagesInput, Prisma.CampaignUpdateWithoutImagesInput>, Prisma.CampaignUncheckedUpdateWithoutImagesInput>
 }
 
+export type CampaignCreateNestedManyWithoutDiscountInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput> | Prisma.CampaignCreateWithoutDiscountInput[] | Prisma.CampaignUncheckedCreateWithoutDiscountInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutDiscountInput | Prisma.CampaignCreateOrConnectWithoutDiscountInput[]
+  createMany?: Prisma.CampaignCreateManyDiscountInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUncheckedCreateNestedManyWithoutDiscountInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput> | Prisma.CampaignCreateWithoutDiscountInput[] | Prisma.CampaignUncheckedCreateWithoutDiscountInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutDiscountInput | Prisma.CampaignCreateOrConnectWithoutDiscountInput[]
+  createMany?: Prisma.CampaignCreateManyDiscountInputEnvelope
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+}
+
+export type CampaignUpdateManyWithoutDiscountNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput> | Prisma.CampaignCreateWithoutDiscountInput[] | Prisma.CampaignUncheckedCreateWithoutDiscountInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutDiscountInput | Prisma.CampaignCreateOrConnectWithoutDiscountInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutDiscountInput | Prisma.CampaignUpsertWithWhereUniqueWithoutDiscountInput[]
+  createMany?: Prisma.CampaignCreateManyDiscountInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutDiscountInput | Prisma.CampaignUpdateWithWhereUniqueWithoutDiscountInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutDiscountInput | Prisma.CampaignUpdateManyWithWhereWithoutDiscountInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
+export type CampaignUncheckedUpdateManyWithoutDiscountNestedInput = {
+  create?: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput> | Prisma.CampaignCreateWithoutDiscountInput[] | Prisma.CampaignUncheckedCreateWithoutDiscountInput[]
+  connectOrCreate?: Prisma.CampaignCreateOrConnectWithoutDiscountInput | Prisma.CampaignCreateOrConnectWithoutDiscountInput[]
+  upsert?: Prisma.CampaignUpsertWithWhereUniqueWithoutDiscountInput | Prisma.CampaignUpsertWithWhereUniqueWithoutDiscountInput[]
+  createMany?: Prisma.CampaignCreateManyDiscountInputEnvelope
+  set?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  disconnect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  delete?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  connect?: Prisma.CampaignWhereUniqueInput | Prisma.CampaignWhereUniqueInput[]
+  update?: Prisma.CampaignUpdateWithWhereUniqueWithoutDiscountInput | Prisma.CampaignUpdateWithWhereUniqueWithoutDiscountInput[]
+  updateMany?: Prisma.CampaignUpdateManyWithWhereWithoutDiscountInput | Prisma.CampaignUpdateManyWithWhereWithoutDiscountInput[]
+  deleteMany?: Prisma.CampaignScalarWhereInput | Prisma.CampaignScalarWhereInput[]
+}
+
 export type CampaignCreateWithoutSectionInput = {
   id?: string
   title: string
   description?: string | null
   hasDiscount?: boolean
-  discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   images?: Prisma.CampaignImageCreateNestedManyWithoutCampaignInput
+  discount?: Prisma.ProductDiscountCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutSectionInput = {
@@ -538,7 +582,7 @@ export type CampaignUncheckedCreateWithoutSectionInput = {
   hasDiscount?: boolean
   discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -581,7 +625,7 @@ export type CampaignScalarWhereInput = {
   hasDiscount?: Prisma.BoolFilter<"Campaign"> | boolean
   discountId?: Prisma.StringNullableFilter<"Campaign"> | string | null
   startAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
-  endAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
+  endAt?: Prisma.DateTimeNullableFilter<"Campaign"> | Date | string | null
   status?: Prisma.StringFilter<"Campaign"> | string
   createdAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Campaign"> | Date | string
@@ -593,13 +637,13 @@ export type CampaignCreateWithoutImagesInput = {
   title: string
   description?: string | null
   hasDiscount?: boolean
-  discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
   section: Prisma.SectionCreateNestedOneWithoutCampaignsInput
+  discount?: Prisma.ProductDiscountCreateNestedOneWithoutCampaignsInput
 }
 
 export type CampaignUncheckedCreateWithoutImagesInput = {
@@ -609,7 +653,7 @@ export type CampaignUncheckedCreateWithoutImagesInput = {
   hasDiscount?: boolean
   discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -637,13 +681,13 @@ export type CampaignUpdateWithoutImagesInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   section?: Prisma.SectionUpdateOneRequiredWithoutCampaignsNestedInput
+  discount?: Prisma.ProductDiscountUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutImagesInput = {
@@ -653,11 +697,65 @@ export type CampaignUncheckedUpdateWithoutImagesInput = {
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   sectionId?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type CampaignCreateWithoutDiscountInput = {
+  id?: string
+  title: string
+  description?: string | null
+  hasDiscount?: boolean
+  startAt: Date | string
+  endAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  section: Prisma.SectionCreateNestedOneWithoutCampaignsInput
+  images?: Prisma.CampaignImageCreateNestedManyWithoutCampaignInput
+}
+
+export type CampaignUncheckedCreateWithoutDiscountInput = {
+  id?: string
+  title: string
+  description?: string | null
+  hasDiscount?: boolean
+  startAt: Date | string
+  endAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sectionId: string
+  images?: Prisma.CampaignImageUncheckedCreateNestedManyWithoutCampaignInput
+}
+
+export type CampaignCreateOrConnectWithoutDiscountInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput>
+}
+
+export type CampaignCreateManyDiscountInputEnvelope = {
+  data: Prisma.CampaignCreateManyDiscountInput | Prisma.CampaignCreateManyDiscountInput[]
+  skipDuplicates?: boolean
+}
+
+export type CampaignUpsertWithWhereUniqueWithoutDiscountInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  update: Prisma.XOR<Prisma.CampaignUpdateWithoutDiscountInput, Prisma.CampaignUncheckedUpdateWithoutDiscountInput>
+  create: Prisma.XOR<Prisma.CampaignCreateWithoutDiscountInput, Prisma.CampaignUncheckedCreateWithoutDiscountInput>
+}
+
+export type CampaignUpdateWithWhereUniqueWithoutDiscountInput = {
+  where: Prisma.CampaignWhereUniqueInput
+  data: Prisma.XOR<Prisma.CampaignUpdateWithoutDiscountInput, Prisma.CampaignUncheckedUpdateWithoutDiscountInput>
+}
+
+export type CampaignUpdateManyWithWhereWithoutDiscountInput = {
+  where: Prisma.CampaignScalarWhereInput
+  data: Prisma.XOR<Prisma.CampaignUpdateManyMutationInput, Prisma.CampaignUncheckedUpdateManyWithoutDiscountInput>
 }
 
 export type CampaignCreateManySectionInput = {
@@ -667,7 +765,7 @@ export type CampaignCreateManySectionInput = {
   hasDiscount?: boolean
   discountId?: string | null
   startAt: Date | string
-  endAt: Date | string
+  endAt?: Date | string | null
   status?: string
   createdAt?: Date | string
   updatedAt?: Date | string
@@ -678,13 +776,13 @@ export type CampaignUpdateWithoutSectionInput = {
   title?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   images?: Prisma.CampaignImageUpdateManyWithoutCampaignNestedInput
+  discount?: Prisma.ProductDiscountUpdateOneWithoutCampaignsNestedInput
 }
 
 export type CampaignUncheckedUpdateWithoutSectionInput = {
@@ -694,7 +792,7 @@ export type CampaignUncheckedUpdateWithoutSectionInput = {
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -708,10 +806,64 @@ export type CampaignUncheckedUpdateManyWithoutSectionInput = {
   hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
   discountId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  endAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   status?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type CampaignCreateManyDiscountInput = {
+  id?: string
+  title: string
+  description?: string | null
+  hasDiscount?: boolean
+  startAt: Date | string
+  endAt?: Date | string | null
+  status?: string
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  sectionId: string
+}
+
+export type CampaignUpdateWithoutDiscountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  section?: Prisma.SectionUpdateOneRequiredWithoutCampaignsNestedInput
+  images?: Prisma.CampaignImageUpdateManyWithoutCampaignNestedInput
+}
+
+export type CampaignUncheckedUpdateWithoutDiscountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
+  images?: Prisma.CampaignImageUncheckedUpdateManyWithoutCampaignNestedInput
+}
+
+export type CampaignUncheckedUpdateManyWithoutDiscountInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  title?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  hasDiscount?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  startAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  endAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  status?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  sectionId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -759,6 +911,7 @@ export type CampaignSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   sectionId?: boolean
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
   images?: boolean | Prisma.Campaign$imagesArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
   _count?: boolean | Prisma.CampaignCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
@@ -775,6 +928,7 @@ export type CampaignSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   updatedAt?: boolean
   sectionId?: boolean
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
 export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -790,6 +944,7 @@ export type CampaignSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   updatedAt?: boolean
   sectionId?: boolean
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
 }, ExtArgs["result"]["campaign"]>
 
 export type CampaignSelectScalar = {
@@ -810,13 +965,16 @@ export type CampaignOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs =
 export type CampaignInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
   images?: boolean | Prisma.Campaign$imagesArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
   _count?: boolean | Prisma.CampaignCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type CampaignIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
 }
 export type CampaignIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   section?: boolean | Prisma.SectionDefaultArgs<ExtArgs>
+  discount?: boolean | Prisma.Campaign$discountArgs<ExtArgs>
 }
 
 export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -824,6 +982,7 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
   objects: {
     section: Prisma.$SectionPayload<ExtArgs>
     images: Prisma.$CampaignImagePayload<ExtArgs>[]
+    discount: Prisma.$ProductDiscountPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -832,7 +991,7 @@ export type $CampaignPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     hasDiscount: boolean
     discountId: string | null
     startAt: Date
-    endAt: Date
+    endAt: Date | null
     status: string
     createdAt: Date
     updatedAt: Date
@@ -1233,6 +1392,7 @@ export interface Prisma__CampaignClient<T, Null = never, ExtArgs extends runtime
   readonly [Symbol.toStringTag]: "PrismaPromise"
   section<T extends Prisma.SectionDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.SectionDefaultArgs<ExtArgs>>): Prisma.Prisma__SectionClient<runtime.Types.Result.GetResult<Prisma.$SectionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   images<T extends Prisma.Campaign$imagesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$imagesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$CampaignImagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  discount<T extends Prisma.Campaign$discountArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Campaign$discountArgs<ExtArgs>>): Prisma.Prisma__ProductDiscountClient<runtime.Types.Result.GetResult<Prisma.$ProductDiscountPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1695,6 +1855,25 @@ export type Campaign$imagesArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.CampaignImageScalarFieldEnum | Prisma.CampaignImageScalarFieldEnum[]
+}
+
+/**
+ * Campaign.discount
+ */
+export type Campaign$discountArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ProductDiscount
+   */
+  select?: Prisma.ProductDiscountSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ProductDiscount
+   */
+  omit?: Prisma.ProductDiscountOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProductDiscountInclude<ExtArgs> | null
+  where?: Prisma.ProductDiscountWhereInput
 }
 
 /**
