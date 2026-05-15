@@ -177,3 +177,28 @@ export type Notification = Prisma.NotificationModel
  * 
  */
 export type ActivityLog = Prisma.ActivityLogModel
+/**
+ * Model Setting
+ * 
+ */
+export type Setting = Prisma.SettingModel
+/**
+ * Model Policy
+ * 
+ */
+export type Policy = Prisma.PolicyModel
+/**
+ * Model Section
+ * 
+ */
+export type Section = Prisma.SectionModel
+/**
+ * Model Campaign
+ * 
+ */
+export type Campaign = Prisma.CampaignModel
+/**
+ * Model CampaignImage
+ * 
+ */
+export type CampaignImage = Prisma.CampaignImageModel
