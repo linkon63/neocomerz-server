@@ -683,7 +683,7 @@ model Policy {
 
 model Section {
   id        String   @id @default(uuid())
-  position  String
+  position  Int
   title     String
   page      String
 

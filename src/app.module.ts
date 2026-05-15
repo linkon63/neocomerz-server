@@ -28,6 +28,7 @@ import { TagsModule } from './tags/tags.module';
 import { UnitModule } from './unit/unit.module';
 import { SettingsModule } from './settings/settings.module';
 import { PoliciesModule } from './policies/policies.module';
+import { SectionsModule } from './sections/sections.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { PoliciesModule } from './policies/policies.module';
     UnitModule,
     SettingsModule,
     PoliciesModule,
+    SectionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
