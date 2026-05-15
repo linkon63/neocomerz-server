@@ -27,6 +27,7 @@ import { ActivityLogModule } from './activity-log/activity-log.module';
 import { TagsModule } from './tags/tags.module';
 import { UnitModule } from './unit/unit.module';
 import { SettingsModule } from './settings/settings.module';
+import { PoliciesModule } from './policies/policies.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { SettingsModule } from './settings/settings.module';
     TagsModule,
     UnitModule,
     SettingsModule,
+    PoliciesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
