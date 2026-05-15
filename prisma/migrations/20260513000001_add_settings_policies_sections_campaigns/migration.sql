@@ -49,7 +49,7 @@ CREATE TABLE "policies" (
 -- CreateTable sections
 CREATE TABLE "sections" (
     "id" TEXT NOT NULL,
-    "position" TEXT NOT NULL,
+    "position" INTEGER NOT NULL,
     "title" TEXT NOT NULL,
     "page" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
