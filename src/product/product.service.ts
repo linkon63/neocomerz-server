@@ -71,7 +71,9 @@ export class ProductService {
       this.prisma.product.count({ where }),
     ]);
 
-    return { data, meta: { page, limit, total } };
+    const enriched = await this.enrichWithDiscounts(data);
+
+    return { data: enriched, meta: { page, limit, total } };
   }
 
   async findOne(id: string) {
@@ -80,7 +82,7 @@ export class ProductService {
       include: productInclude,
     });
     if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
-    return product;
+    return this.enrichWithDiscounts(product);
   }
 
   async findBySlug(slug: string) {
@@ -89,7 +91,7 @@ export class ProductService {
       include: productInclude,
     });
     if (!product) throw new NotFoundException(`Product with slug ${slug} not found`);
-    return product;
+    return this.enrichWithDiscounts(product);
   }
 
   async update(id: string, dto: UpdateProductDto) {
@@ -283,6 +285,90 @@ export class ProductService {
     await this.findVariant(id);
     await this.prisma.productVariant.delete({ where: { id } });
     return { message: 'Variant deleted successfully' };
+  }
+
+  private async enrichWithDiscounts(products: any | any[]) {
+    const list = Array.isArray(products) ? products : [products];
+    const productIds = list.map((p: any) => p.id).filter(Boolean);
+    if (!productIds.length) return products;
+
+    const now = new Date();
+    const discountProducts = await this.prisma.discountProduct.findMany({
+      where: {
+        productId: { in: productIds },
+        discount: {
+          status: 'active',
+          AND: [
+            { OR: [{ startDate: null }, { startDate: { lte: now } }] },
+            { OR: [{ endDate: null }, { endDate: { gte: now } }] },
+          ],
+        },
+      },
+      include: { discount: true },
+    });
+
+    const discountMap = new Map<string, any[]>();
+    for (const dp of discountProducts) {
+      const arr = discountMap.get(dp.productId) || [];
+      arr.push(dp.discount);
+      discountMap.set(dp.productId, arr);
+    }
+
+    for (const product of list) {
+      const discounts = discountMap.get(product.id);
+      if (!discounts?.length) continue;
+
+      const bestDiscount = this.pickBestDiscount(discounts, product.variants);
+      if (!bestDiscount) continue;
+
+      product.discount = {
+        id: bestDiscount.id,
+        type: bestDiscount.type,
+        value: Number(bestDiscount.value),
+      };
+
+      if (product.variants) {
+        for (const variant of product.variants) {
+          const price = Number(variant.price);
+          const { discountAmount, discountedPrice } = this.calculateDiscount(
+            price,
+            bestDiscount.type as 'percentage' | 'fixed',
+            Number(bestDiscount.value),
+          );
+          variant.discountAmount = discountAmount;
+          variant.discountedPrice = discountedPrice;
+        }
+      }
+    }
+
+    return Array.isArray(products) ? list : list[0];
+  }
+
+  private pickBestDiscount(discounts: any[], variants: any[]) {
+    if (discounts.length === 1) return discounts[0];
+    const lowestPrice = variants?.length
+      ? Math.min(...variants.map((v: any) => Number(v.price)))
+      : 0;
+    return discounts.reduce((best: any, current: any) => {
+      const currentAmount = current.type === 'percentage'
+        ? lowestPrice * (Number(current.value) / 100)
+        : Number(current.value);
+      const bestAmount = best.type === 'percentage'
+        ? lowestPrice * (Number(best.value) / 100)
+        : Number(best.value);
+      return currentAmount > bestAmount ? current : best;
+    });
+  }
+
+  private calculateDiscount(price: number, type: 'percentage' | 'fixed', value: number) {
+    const discountAmount = type === 'percentage'
+      ? price * (value / 100)
+      : value;
+    const actualDiscount = Math.min(discountAmount, price);
+    return {
+      discountAmount: Math.round(actualDiscount * 100) / 100,
+      discountedPrice: Math.round((price - actualDiscount) * 100) / 100,
+    };
   }
 
   private async ensureBrandCategoryAndUnit(brandId: string, categoryId: string, unitId?: string) {

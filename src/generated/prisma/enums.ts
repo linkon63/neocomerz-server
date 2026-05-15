@@ -75,6 +75,14 @@ export const CouponType = {
 export type CouponType = (typeof CouponType)[keyof typeof CouponType]
 
 
+export const DiscountType = {
+  percentage: 'percentage',
+  fixed: 'fixed'
+} as const
+
+export type DiscountType = (typeof DiscountType)[keyof typeof DiscountType]
+
+
 export const PaymentTransactionStatus = {
   pending: 'pending',
   success: 'success',

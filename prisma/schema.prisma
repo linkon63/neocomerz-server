@@ -57,6 +57,11 @@ enum CouponType {
   fixed
 }
 
+enum DiscountType {
+  percentage
+  fixed
+}
+
 enum PaymentTransactionStatus {
   pending
   success
@@ -289,10 +294,11 @@ model Product {
   variants ProductVariant[]
 
   // relations
-  wishlists  Wishlist[]
-  reviews    Review[]
-  orderItems OrderItem[]
-  tags       Tag[]
+  wishlists        Wishlist[]
+  reviews          Review[]
+  orderItems       OrderItem[]
+  tags             Tag[]
+  discountProducts DiscountProduct[]
 
   @@map("products")
 }
@@ -734,4 +740,35 @@ model CampaignImage {
   campaignId String   @map("campaign_id")
 
   @@map("campaign_images")
+}
+
+// ======================================================
+// 🏷️ 19. PRODUCT DISCOUNTS SYSTEM
+// ======================================================
+
+model ProductDiscount {
+  id        String       @id @default(uuid())
+  name      String
+  type      DiscountType
+  value     Decimal      @db.Decimal(10, 2)
+  startDate DateTime?    @map("start_date")
+  endDate   DateTime?    @map("end_date")
+  status    String       @default("active")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+
+  products DiscountProduct[]
+
+  @@map("product_discounts")
+}
+
+model DiscountProduct {
+  discount   ProductDiscount @relation(fields: [discountId], references: [id])
+  discountId String          @map("discount_id")
+  product    Product         @relation(fields: [productId], references: [id])
+  productId  String          @map("product_id")
+
+  @@id([discountId, productId])
+  @@map("discount_products")
 }

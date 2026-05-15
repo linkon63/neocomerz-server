@@ -87,7 +87,9 @@ export const ModelName = {
   Policy: 'Policy',
   Section: 'Section',
   Campaign: 'Campaign',
-  CampaignImage: 'CampaignImage'
+  CampaignImage: 'CampaignImage',
+  ProductDiscount: 'ProductDiscount',
+  DiscountProduct: 'DiscountProduct'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -584,6 +586,29 @@ export const CampaignImageScalarFieldEnum = {
 } as const
 
 export type CampaignImageScalarFieldEnum = (typeof CampaignImageScalarFieldEnum)[keyof typeof CampaignImageScalarFieldEnum]
+
+
+export const ProductDiscountScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  type: 'type',
+  value: 'value',
+  startDate: 'startDate',
+  endDate: 'endDate',
+  status: 'status',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type ProductDiscountScalarFieldEnum = (typeof ProductDiscountScalarFieldEnum)[keyof typeof ProductDiscountScalarFieldEnum]
+
+
+export const DiscountProductScalarFieldEnum = {
+  discountId: 'discountId',
+  productId: 'productId'
+} as const
+
+export type DiscountProductScalarFieldEnum = (typeof DiscountProductScalarFieldEnum)[keyof typeof DiscountProductScalarFieldEnum]
 
 
 export const SortOrder = {

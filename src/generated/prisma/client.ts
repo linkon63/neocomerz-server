@@ -224,3 +224,13 @@ export type Campaign = Prisma.CampaignModel
  * 
  */
 export type CampaignImage = Prisma.CampaignImageModel
+/**
+ * Model ProductDiscount
+ * 
+ */
+export type ProductDiscount = Prisma.ProductDiscountModel
+/**
+ * Model DiscountProduct
+ * 
+ */
+export type DiscountProduct = Prisma.DiscountProductModel
