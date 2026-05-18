@@ -95,7 +95,7 @@ export class ProductDiscountService {
 
     const currentType = data.type ?? existing.type;
     const currentValue = data.value ?? Number(existing.value);
-    const idsToCheck = productIds ?? (await this.prisma.discountProduct.findMany({ where: { discountId: id }, select: { productId: true } })).map((dp) => dp.productId);
+    const idsToCheck = productIds ?? await this.getLinkedProductIds(id);
 
     if (currentType === 'fixed') {
       const validation = await this.validateFixedDiscountValue(idsToCheck, currentValue);
@@ -142,6 +142,14 @@ export class ProductDiscountService {
     if (!existing) throw new NotFoundException(`Product discount with ID ${id} not found`);
     await this.prisma.productDiscount.delete({ where: { id } });
     return { message: 'Product discount deleted successfully' };
+  }
+
+  private async getLinkedProductIds(discountId: string): Promise<string[]> {
+    const links = await this.prisma.discountProduct.findMany({
+      where: { discountId },
+      select: { productId: true },
+    });
+    return links.map(l => l.productId);
   }
 
   private async validateProductsExist(productIds: string[]) {
