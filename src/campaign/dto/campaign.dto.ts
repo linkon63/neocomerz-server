@@ -41,6 +41,14 @@ export class CreateCampaignDto {
   @IsOptional()
   @IsIn(['active', 'inactive'])
   status?: 'active' | 'inactive';
+
+  @ApiProperty({
+    type: 'array',
+    items: { type: 'string', format: 'binary' },
+    required: false,
+  })
+  @IsOptional()
+  images?: any;
 }
 
 export class UpdateCampaignDto extends PartialType(CreateCampaignDto) {}

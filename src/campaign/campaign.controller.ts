@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CampaignService } from './campaign.service';
 import { CreateCampaignDto, UpdateCampaignDto } from './dto/campaign.dto';
@@ -15,22 +15,6 @@ export class CampaignController {
   @Post()
   @UseInterceptors(FilesInterceptor('images', 10))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        description: { type: 'string' },
-        sectionId: { type: 'string' },
-        hasDiscount: { type: 'boolean' },
-        discountId: { type: 'string' },
-        startAt: { type: 'string' },
-        endAt: { type: 'string' },
-        status: { type: 'string', enum: ['active', 'inactive'] },
-        images: { type: 'array', items: { type: 'string', format: 'binary' } },
-      },
-    },
-  })
   @ApiOperation({ summary: 'Create a new campaign' })
   create(
     @Body() dto: CreateCampaignDto,
@@ -60,22 +44,6 @@ export class CampaignController {
   @Patch(':id')
   @UseInterceptors(FilesInterceptor('images', 10))
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        title: { type: 'string' },
-        description: { type: 'string' },
-        sectionId: { type: 'string' },
-        hasDiscount: { type: 'boolean' },
-        discountId: { type: 'string' },
-        startAt: { type: 'string' },
-        endAt: { type: 'string' },
-        status: { type: 'string', enum: ['active', 'inactive'] },
-        images: { type: 'array', items: { type: 'string', format: 'binary' } },
-      },
-    },
-  })
   @ApiOperation({ summary: 'Update campaign by ID' })
   update(
     @Param('id') id: string,
