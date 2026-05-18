@@ -29,6 +29,8 @@ import { UnitModule } from './unit/unit.module';
 import { SettingsModule } from './settings/settings.module';
 import { PoliciesModule } from './policies/policies.module';
 import { SectionsModule } from './sections/sections.module';
+import { ProductDiscountModule } from './product-discount/product-discount.module';
+import { CampaignModule } from './campaign/campaign.module';
 
 @Module({
   imports: [
@@ -62,6 +64,8 @@ import { SectionsModule } from './sections/sections.module';
     SettingsModule,
     PoliciesModule,
     SectionsModule,
+    ProductDiscountModule,
+    CampaignModule,
   ],
   controllers: [AppController],
   providers: [AppService],
