@@ -23,7 +23,29 @@ export class ReviewService {
   pending() {
     return this.prisma.review.findMany({
       where: { isApproved: false },
-      include: { product: true, user: { select: { id: true, name: true, email: true } } },
+      include: {
+        product: {
+          include: {
+            media: { include: { media: true }, orderBy: { isFeatured: 'desc' as const }, take: 1 },
+          },
+        },
+        user: { select: { id: true, name: true, email: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
+
+  approved() {
+    return this.prisma.review.findMany({
+      where: { isApproved: true },
+      include: {
+        product: {
+          include: {
+            media: { include: { media: true }, orderBy: { isFeatured: 'desc' as const }, take: 1 },
+          },
+        },
+        user: { select: { id: true, name: true, email: true } },
+      },
       orderBy: { createdAt: 'desc' },
     });
   }

@@ -1,8 +1,16 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { Roles } from '../auth/roles.decorator';
-import { DashboardService } from './dashboard.service';
+import { DashboardService, type DateRange } from './dashboard.service';
+
+function parseRange(from?: string, to?: string): DateRange | undefined {
+  if (!from || !to) return undefined;
+  const f = new Date(from);
+  const t = new Date(to);
+  if (isNaN(f.getTime()) || isNaN(t.getTime())) return undefined;
+  return { from: f, to: t };
+}
 
 @ApiTags('Dashboard')
 @ApiBearerAuth()
@@ -14,14 +22,18 @@ export class DashboardController {
 
   @Get('summary')
   @ApiOperation({ summary: 'Get dashboard summary (admin only)' })
-  summary() {
-    return this.dashboardService.summary();
+  @ApiQuery({ name: 'from', required: false })
+  @ApiQuery({ name: 'to', required: false })
+  summary(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.dashboardService.summary(parseRange(from, to));
   }
 
   @Get('sales')
   @ApiOperation({ summary: 'Get sales report data (admin only)' })
-  sales() {
-    return this.dashboardService.sales();
+  @ApiQuery({ name: 'from', required: false })
+  @ApiQuery({ name: 'to', required: false })
+  sales(@Query('from') from?: string, @Query('to') to?: string) {
+    return this.dashboardService.sales(parseRange(from, to));
   }
 
   @Get('orders')

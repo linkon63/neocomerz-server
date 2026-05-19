@@ -5,7 +5,20 @@ import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 const orderInclude = {
   user: { select: { id: true, name: true, email: true, phone: true } },
   address: true,
-  items: { include: { product: true, variant: true } },
+  items: {
+    include: {
+      product: {
+        include: {
+          media: { include: { media: true }, orderBy: { isFeatured: 'desc' as const }, take: 1 },
+        },
+      },
+      variant: {
+        include: {
+          media: { include: { media: true }, orderBy: { isFeatured: 'desc' as const }, take: 1 },
+        },
+      },
+    },
+  },
   payments: { orderBy: { paidAt: 'desc' as const } },
   shipments: true,
   statusLogs: { orderBy: { createdAt: 'desc' as const } },

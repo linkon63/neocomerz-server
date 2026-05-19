@@ -78,7 +78,10 @@ export class AuthService {
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto) {
-    const user = await this.userService.findByEmail((await this.userService.findOne(userId)).email);
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, email: true, password: true },
+    });
     if (!user) throw new NotFoundException('User not found');
     const valid = await bcrypt.compare(dto.currentPassword, user.password);
     if (!valid) throw new UnauthorizedException('Current password is incorrect');
@@ -88,7 +91,7 @@ export class AuthService {
 
   async forgotPassword(dto: ForgotPasswordDto) {
     const user = await this.userService.findByEmail(dto.email);
-    if (!user) return { message: 'If the email exists, a reset token was generated' };
+    if (!user) return { message: 'If the email exists, a reset link will be sent' };
     const token = uuidv4();
     await this.prisma.passwordReset.create({
       data: {
@@ -98,7 +101,7 @@ export class AuthService {
         expiresAt: new Date(Date.now() + 60 * 60 * 1000),
       },
     });
-    return { message: 'Reset token generated', token };
+    return { message: 'If the email exists, a reset link will be sent' };
   }
 
   async resetPassword(dto: ResetPasswordDto) {

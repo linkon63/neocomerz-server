@@ -1,11 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+export type DateRange = { from: Date; to: Date };
+
+function buildDateFilter(range?: DateRange) {
+  if (!range) return undefined;
+  return { gte: range.from, lte: range.to };
+}
+
 @Injectable()
 export class DashboardService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async summary() {
+  async summary(range?: DateRange) {
+    const placedAt = buildDateFilter(range);
+    const orderWhere = placedAt ? { placedAt } : {};
+
     const [
       totalOrders,
       pendingOrders,
@@ -17,16 +27,20 @@ export class DashboardService {
       sales,
       recentOrders,
     ] = await Promise.all([
-      this.prisma.order.count(),
-      this.prisma.order.count({ where: { status: 'pending' } }),
-      this.prisma.order.count({ where: { status: 'processing' } }),
-      this.prisma.order.count({ where: { status: 'delivered' } }),
+      this.prisma.order.count({ where: orderWhere }),
+      this.prisma.order.count({ where: { ...orderWhere, status: 'pending' } }),
+      this.prisma.order.count({ where: { ...orderWhere, status: 'processing' } }),
+      this.prisma.order.count({ where: { ...orderWhere, status: 'delivered' } }),
       this.prisma.user.count(),
       this.prisma.product.count({ where: { deletedAt: null } }),
       this.prisma.productVariant.count({ where: { stockQuantity: { lte: 10 } } }),
-      this.prisma.order.aggregate({ _sum: { total: true }, where: { paymentStatus: 'paid' } }),
+      this.prisma.order.aggregate({
+        _sum: { total: true },
+        where: { ...orderWhere, paymentStatus: 'paid' },
+      }),
       this.prisma.order.findMany({
         take: 10,
+        where: orderWhere,
         orderBy: { placedAt: 'desc' },
         include: { user: { select: { id: true, name: true, email: true } } },
       }),
@@ -45,9 +59,10 @@ export class DashboardService {
     };
   }
 
-  sales() {
+  sales(range?: DateRange) {
+    const placedAt = buildDateFilter(range);
     return this.prisma.order.findMany({
-      where: { paymentStatus: 'paid' },
+      where: { paymentStatus: 'paid', ...(placedAt ? { placedAt } : {}) },
       orderBy: { placedAt: 'desc' },
       select: { id: true, orderNumber: true, total: true, placedAt: true },
     });

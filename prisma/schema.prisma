@@ -169,6 +169,9 @@ model Media {
   variantMedia VariantMedia[]
   userProfile  UserProfile?
 
+  sizeChartProducts Product[] @relation("ProductSizeChartMedia")
+  careGuideProducts Product[] @relation("ProductCareGuideMedia")
+
   @@map("media")
 }
 
