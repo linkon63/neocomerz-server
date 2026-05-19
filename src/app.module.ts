@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -26,16 +27,23 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { ActivityLogModule } from './activity-log/activity-log.module';
 import { TagsModule } from './tags/tags.module';
 import { UnitModule } from './unit/unit.module';
+import { SupplierModule } from './supplier/supplier.module';
+import { BranchModule } from './branch/branch.module';
+import { ChannelModule } from './channel/channel.module';
+import { VatModule } from './vat/vat.module';
 import { SettingsModule } from './settings/settings.module';
 import { PoliciesModule } from './policies/policies.module';
 import { SectionsModule } from './sections/sections.module';
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { JwtAuthGuard } from './auth/jwt-auth.guard';
+import { RolesGuard } from './auth/roles.guard';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
     }),
     PrismaModule,
     UserModule,
@@ -61,6 +69,10 @@ import { CampaignModule } from './campaign/campaign.module';
     ActivityLogModule,
     TagsModule,
     UnitModule,
+    SupplierModule,
+    BranchModule,
+    ChannelModule,
+    VatModule,
     SettingsModule,
     PoliciesModule,
     SectionsModule,
@@ -68,6 +80,20 @@ import { CampaignModule } from './campaign/campaign.module';
     CampaignModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // JwtAuthGuard runs first globally to populate req.user from JWT token.
+    // Endpoints without @UseGuards(JwtAuthGuard) or with @Public() decorator are skipped.
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    // RolesGuard runs second globally after req.user is populated.
+    // Endpoints without @Roles() are unrestricted by role.
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
+  ],
 })
 export class AppModule { }

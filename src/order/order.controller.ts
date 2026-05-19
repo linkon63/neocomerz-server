@@ -1,6 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
 import { OrderService } from './order.service';
 
@@ -18,7 +19,8 @@ export class OrderController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all orders' })
+  @Roles('admin')
+  @ApiOperation({ summary: 'Get all orders (admin only)' })
   findAll() {
     return this.orderService.findAll();
   }
@@ -36,7 +38,8 @@ export class OrderController {
   }
 
   @Patch(':id/status')
-  @ApiOperation({ summary: 'Update order status' })
+  @Roles('admin')
+  @ApiOperation({ summary: 'Update order status (admin only)' })
   updateStatus(@Param('id') id: string, @Body() dto: UpdateOrderStatusDto) {
     return this.orderService.updateStatus(id, dto);
   }

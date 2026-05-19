@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseUUIDPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseUUIDPipe, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
+import { Roles } from '../auth/roles.decorator';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
-import { ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 
 @ApiTags('Brands')
 @Controller('brands')
@@ -11,6 +14,9 @@ export class BrandsController {
   constructor(private readonly brandsService: BrandsService) { }
 
   @Post()
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('logo'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -19,10 +25,7 @@ export class BrandsController {
       properties: {
         name: { type: 'string' },
         slug: { type: 'string' },
-        logo: {
-          type: 'string',
-          format: 'binary',
-        },
+        logo: { type: 'string', format: 'binary' },
       },
     },
   })
@@ -31,17 +34,15 @@ export class BrandsController {
   }
 
   @Post(':id/upload-logo')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('logo'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
-      properties: {
-        logo: {
-          type: 'string',
-          format: 'binary',
-        },
-      },
+      properties: { logo: { type: 'string', format: 'binary' } },
     },
   })
   uploadLogo(
@@ -52,16 +53,21 @@ export class BrandsController {
   }
 
   @Get()
+  @Public()
   findAll() {
     return this.brandsService.findAll();
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.brandsService.findOne(id);
   }
 
   @Patch(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('logo'))
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -70,10 +76,7 @@ export class BrandsController {
       properties: {
         name: { type: 'string' },
         slug: { type: 'string' },
-        logo: {
-          type: 'string',
-          format: 'binary',
-        },
+        logo: { type: 'string', format: 'binary' },
       },
     },
   })
@@ -86,6 +89,9 @@ export class BrandsController {
   }
 
   @Delete(':id')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.brandsService.remove(id);
   }

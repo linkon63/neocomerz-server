@@ -6,7 +6,7 @@ const orderInclude = {
   user: { select: { id: true, name: true, email: true, phone: true } },
   address: true,
   items: { include: { product: true, variant: true } },
-  payments: true,
+  payments: { orderBy: { paidAt: 'desc' as const } },
   shipments: true,
   statusLogs: { orderBy: { createdAt: 'desc' as const } },
 };
@@ -73,6 +73,20 @@ export class OrderService {
           statusLogs: { create: { status: 'pending', note: 'Order created' } },
         },
         include: orderInclude,
+      });
+
+      const methodMap: Record<string, string> = {
+        cash_on_delivery: 'cod',
+        bank_transfer: 'bank_transfer',
+        card: 'card',
+      };
+      await tx.payment.create({
+        data: {
+          orderId: order.id,
+          amount: order.total,
+          method: methodMap[dto.paymentMethod ?? 'cash_on_delivery'],
+          status: 'pending',
+        },
       });
 
       for (const item of cart.items) {

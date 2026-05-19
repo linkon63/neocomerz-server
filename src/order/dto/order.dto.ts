@@ -6,6 +6,11 @@ export class CreateOrderDto {
   @IsUUID()
   addressId: string;
 
+  @ApiPropertyOptional({ example: 'cash_on_delivery', enum: ['cash_on_delivery', 'bank_transfer', 'card'] })
+  @IsOptional()
+  @IsIn(['cash_on_delivery', 'bank_transfer', 'card'])
+  paymentMethod?: 'cash_on_delivery' | 'bank_transfer' | 'card';
+
   @ApiPropertyOptional({ example: 'coupon-code' })
   @IsOptional()
   @IsString()

@@ -1,14 +1,17 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, UploadedFiles, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { CampaignService } from './campaign.service';
 import { CreateCampaignDto, UpdateCampaignDto } from './dto/campaign.dto';
 import { UpdateCampaignStatusDto } from './dto/update-campaign-status.dto';
 
 @ApiTags('Campaigns')
+@ApiBearerAuth()
 @Controller('campaigns')
 @UseGuards(JwtAuthGuard)
+@Roles('admin')
 export class CampaignController {
   constructor(private readonly campaignService: CampaignService) {}
 

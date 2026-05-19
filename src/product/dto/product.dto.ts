@@ -29,6 +29,41 @@ export class CreateProductDto {
   @IsString()
   description?: string;
 
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  purchaseOrderReturnable?: boolean;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  includeStock?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  supplierPrice?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  factor?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  markup?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Date)
+  purchaseDate?: Date;
+
   @ApiPropertyOptional({ enum: ['active', 'inactive', 'draft'], default: 'draft' })
   @IsOptional()
   @IsIn(['active', 'inactive', 'draft'])
@@ -62,6 +97,32 @@ export class CreateProductDto {
   @IsUUID()
   unitId?: string;
 
+  @ApiPropertyOptional({ example: 'base-unit-uuid' })
+  @IsOptional()
+  @IsUUID()
+  baseUnitId?: string;
+
+  @ApiPropertyOptional({ example: 'supplier-uuid' })
+  @IsOptional()
+  @IsUUID()
+  supplierId?: string;
+
+  @ApiPropertyOptional({ example: 'branch-uuid' })
+  @IsOptional()
+  @IsUUID()
+  branchId?: string;
+
+  @ApiPropertyOptional({ example: 'vat-uuid' })
+  @IsOptional()
+  @IsUUID()
+  vatId?: string;
+
+  @ApiPropertyOptional({ type: [String], description: 'Channel UUIDs' })
+  @IsOptional()
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  channelIds?: string[];
+
   @ApiPropertyOptional({ type: [String], description: 'Tag UUIDs' })
   @IsOptional()
   @IsArray()
@@ -91,6 +152,21 @@ export class ProductQueryDto {
   @IsOptional()
   @IsIn(['active', 'inactive', 'draft'])
   status?: 'active' | 'inactive' | 'draft';
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  sort?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  minPrice?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  maxPrice?: string;
 
   @ApiPropertyOptional({ default: 1 })
   @IsOptional()
@@ -127,6 +203,39 @@ export class CreateProductMediaDto {
 }
 
 export class UpdateProductMediaDto {
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  sortOrder?: number;
+}
+
+export class CreateVariantMediaDto {
+  @ApiPropertyOptional({ enum: ['image', 'video'], default: 'image' })
+  @IsOptional()
+  @IsIn(['image', 'video'])
+  type?: 'image' | 'video';
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  sortOrder?: number;
+}
+
+export class UpdateVariantMediaDto {
   @ApiPropertyOptional()
   @IsOptional()
   @Type(() => Boolean)

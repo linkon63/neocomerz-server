@@ -13,6 +13,7 @@ import { LoginDto } from './dto/login.dto';
 import { AuthResponseDto } from './dto/auth-response.dto';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { ChangePasswordDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth-extra.dto';
+import { Public } from './public.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -28,6 +29,7 @@ export class AuthController {
   })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
   @ApiConflictResponse({ description: 'Email already exists' })
+  @Public()
   register(@Body() dto: RegisterDto) {
     return this.authService.register(dto);
   }
@@ -41,6 +43,7 @@ export class AuthController {
   })
   @ApiBadRequestResponse({ description: 'Invalid input data' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
+  @Public()
   login(@Body() dto: LoginDto) {
     return this.authService.login(dto);
   }
@@ -75,12 +78,14 @@ export class AuthController {
 
   @Post('forgot-password')
   @ApiOperation({ summary: 'Generate password reset token' })
+  @Public()
   forgotPassword(@Body() dto: ForgotPasswordDto) {
     return this.authService.forgotPassword(dto);
   }
 
   @Post('reset-password')
   @ApiOperation({ summary: 'Reset password with token' })
+  @Public()
   resetPassword(@Body() dto: ResetPasswordDto) {
     return this.authService.resetPassword(dto);
   }

@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   UploadedFile,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -18,14 +19,19 @@ import {
   ApiParam,
   ApiTags,
 } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
+import { Roles } from '../auth/roles.decorator';
 import { ProductService } from './product.service';
 import {
   CreateProductDto,
   CreateProductMediaDto,
   CreateVariantDto,
+  CreateVariantMediaDto,
   ProductQueryDto,
   UpdateProductDto,
   UpdateProductMediaDto,
+  UpdateVariantMediaDto,
   UpdateVariantDto,
 } from './dto/product.dto';
 
@@ -34,43 +40,35 @@ import {
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
+  // ── Admin-only write operations ──────────────────────────────────────────
+
   @Post('products')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create product' })
   create(@Body() dto: CreateProductDto) {
     return this.productService.create(dto);
   }
 
-  @Get('products')
-  @ApiOperation({ summary: 'Get products with search, filters, and pagination' })
-  findAll(@Query() query: ProductQueryDto) {
-    return this.productService.findAll(query);
-  }
-
-  @Get('products/slug/:slug')
-  @ApiOperation({ summary: 'Get product by slug' })
-  findBySlug(@Param('slug') slug: string) {
-    return this.productService.findBySlug(slug);
-  }
-
-  @Get('products/:id')
-  @ApiOperation({ summary: 'Get product by ID' })
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(id);
-  }
-
   @Patch('products/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update product' })
   update(@Param('id') id: string, @Body() dto: UpdateProductDto) {
     return this.productService.update(id, dto);
   }
 
   @Delete('products/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Soft delete product' })
   remove(@Param('id') id: string) {
     return this.productService.remove(id);
   }
 
   @Post('products/:productId/media')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @UseInterceptors(FileInterceptor('file'))
   @ApiOperation({ summary: 'Upload product media. Local storage is default; set STORAGE_PROVIDER=s3 for S3.' })
   @ApiConsumes('multipart/form-data')
@@ -95,51 +93,137 @@ export class ProductController {
     return this.productService.addMedia(productId, dto, file);
   }
 
-  @Get('products/:productId/media')
-  @ApiOperation({ summary: 'List product media' })
-  listMedia(@Param('productId') productId: string) {
-    return this.productService.listMedia(productId);
-  }
-
   @Patch('product-media/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update product media flags/order' })
   updateMedia(@Param('id') id: string, @Body() dto: UpdateProductMediaDto) {
     return this.productService.updateMedia(id, dto);
   }
 
   @Delete('product-media/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete product media and uploaded file' })
   removeMedia(@Param('id') id: string) {
     return this.productService.removeMedia(id);
   }
 
   @Post('products/:productId/variants')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Create product variant' })
   createVariant(@Param('productId') productId: string, @Body() dto: CreateVariantDto) {
     return this.productService.createVariant(productId, dto);
   }
 
-  @Get('products/:productId/variants')
-  @ApiOperation({ summary: 'List product variants' })
-  listVariants(@Param('productId') productId: string) {
-    return this.productService.listVariants(productId);
-  }
-
-  @Get('variants/:id')
-  @ApiOperation({ summary: 'Get variant by ID' })
-  findVariant(@Param('id') id: string) {
-    return this.productService.findVariant(id);
-  }
-
   @Patch('variants/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Update variant' })
   updateVariant(@Param('id') id: string, @Body() dto: UpdateVariantDto) {
     return this.productService.updateVariant(id, dto);
   }
 
   @Delete('variants/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @ApiOperation({ summary: 'Delete variant' })
   removeVariant(@Param('id') id: string) {
     return this.productService.removeVariant(id);
+  }
+
+  @Post('variants/:variantId/media')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiOperation({ summary: 'Upload variant media' })
+  @ApiConsumes('multipart/form-data')
+  @ApiParam({ name: 'variantId' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: { type: 'string', format: 'binary' },
+        type: { type: 'string', enum: ['image', 'video'], default: 'image' },
+        isFeatured: { type: 'boolean', default: false },
+        sortOrder: { type: 'number', default: 0 },
+      },
+      required: ['file'],
+    },
+  })
+  addVariantMedia(
+    @Param('variantId') variantId: string,
+    @Body() dto: CreateVariantMediaDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.productService.addVariantMedia(variantId, dto, file);
+  }
+
+  @Patch('variant-media/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Update variant media flags/order' })
+  updateVariantMedia(@Param('id') id: string, @Body() dto: UpdateVariantMediaDto) {
+    return this.productService.updateVariantMedia(id, dto);
+  }
+
+  @Delete('variant-media/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Delete variant media and uploaded file' })
+  removeVariantMedia(@Param('id') id: string) {
+    return this.productService.removeVariantMedia(id);
+  }
+
+  // ── Public read operations ───────────────────────────────────────────────
+
+  @Get('products')
+  @Public()
+  @ApiOperation({ summary: 'Get products with search, filters, and pagination' })
+  findAll(@Query() query: ProductQueryDto) {
+    return this.productService.findAll(query);
+  }
+
+  @Get('products/slug/:slug')
+  @Public()
+  @ApiOperation({ summary: 'Get product by slug' })
+  findBySlug(@Param('slug') slug: string) {
+    return this.productService.findBySlug(slug);
+  }
+
+  @Get('products/:id')
+  @Public()
+  @ApiOperation({ summary: 'Get product by ID' })
+  findOne(@Param('id') id: string) {
+    return this.productService.findOne(id);
+  }
+
+  @Get('products/:productId/media')
+  @Public()
+  @ApiOperation({ summary: 'List product media' })
+  listMedia(@Param('productId') productId: string) {
+    return this.productService.listMedia(productId);
+  }
+
+  @Get('products/:productId/variants')
+  @Public()
+  @ApiOperation({ summary: 'List product variants' })
+  listVariants(@Param('productId') productId: string) {
+    return this.productService.listVariants(productId);
+  }
+
+  @Get('variants/:variantId/media')
+  @Public()
+  @ApiOperation({ summary: 'List variant media' })
+  listVariantMedia(@Param('variantId') variantId: string) {
+    return this.productService.listVariantMedia(variantId);
+  }
+
+  @Get('variants/:id')
+  @Public()
+  @ApiOperation({ summary: 'Get variant by ID' })
+  findVariant(@Param('id') id: string) {
+    return this.productService.findVariant(id);
   }
 }

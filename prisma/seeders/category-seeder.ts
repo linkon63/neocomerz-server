@@ -306,15 +306,17 @@ export async function seedCategories() {
     for (const category of electronicDeviceCategories) {
       console.log(`📁 Creating main category: ${category.name}`);
 
-      const createdCategory = await prisma.category.create({
-        data: {
+      const createdCategory = await prisma.category.upsert({
+        where: { slug: category.slug },
+        update: { name: category.name },
+        create: {
           name: category.name,
           slug: category.slug,
         },
       });
 
       createdCategories.set(category.slug, createdCategory.id);
-      console.log(`✅ Created category: ${category.name} (ID: ${createdCategory.id})`);
+      console.log(`✅ Upserted category: ${category.name} (ID: ${createdCategory.id})`);
 
       // Create subcategories
       const categorySubCategories = subCategories[category.slug as keyof typeof subCategories];
@@ -322,8 +324,10 @@ export async function seedCategories() {
         for (const subCat of categorySubCategories) {
           console.log(`  📂 Creating subcategory: ${subCat.name}`);
 
-          await prisma.category.create({
-            data: {
+          await prisma.category.upsert({
+            where: { slug: subCat.slug },
+            update: { name: subCat.name },
+            create: {
               name: subCat.name,
               slug: subCat.slug,
               parent: {
@@ -332,7 +336,7 @@ export async function seedCategories() {
             },
           });
 
-          console.log(`  ✅ Created subcategory: ${subCat.name}`);
+          console.log(`  ✅ Upserted subcategory: ${subCat.name}`);
         }
       }
     }

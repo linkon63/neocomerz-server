@@ -1,5 +1,7 @@
-import { Controller, Get, Body, Patch } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Body, Patch, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags, ApiOperation } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { SettingsService } from './settings.service';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 
@@ -15,7 +17,10 @@ export class SettingsController {
   }
 
   @Patch()
-  @ApiOperation({ summary: 'Create or update settings' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Create or update settings (admin only)' })
   upsert(@Body() updateSettingDto: UpdateSettingDto) {
     return this.settingsService.upsert(updateSettingDto);
   }

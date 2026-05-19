@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import {
   AssignPermissionsDto,
   CreatePermissionDto,
@@ -9,6 +11,9 @@ import {
 import { RoleService } from './role.service';
 
 @ApiTags('Roles & Permissions')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles('admin')
 @Controller()
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}

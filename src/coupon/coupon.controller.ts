@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { CouponService } from './coupon.service';
 import { ApplyCouponDto, CreateCouponDto, UpdateCouponDto } from './dto/coupon.dto';
 
@@ -9,13 +11,25 @@ export class CouponController {
   constructor(private readonly couponService: CouponService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Create coupon' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Create coupon (admin only)' })
   create(@Body() dto: CreateCouponDto) {
     return this.couponService.create(dto);
   }
 
+  @Post('apply')
+  @ApiOperation({ summary: 'Apply coupon to a subtotal' })
+  apply(@Body() dto: ApplyCouponDto) {
+    return this.couponService.apply(dto);
+  }
+
   @Get()
-  @ApiOperation({ summary: 'List coupons' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'List coupons (admin only)' })
   findAll() {
     return this.couponService.findAll();
   }
@@ -27,20 +41,20 @@ export class CouponController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Update coupon' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Update coupon (admin only)' })
   update(@Param('id') id: string, @Body() dto: UpdateCouponDto) {
     return this.couponService.update(id, dto);
   }
 
   @Delete(':id')
-  @ApiOperation({ summary: 'Delete coupon' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Delete coupon (admin only)' })
   remove(@Param('id') id: string) {
     return this.couponService.remove(id);
-  }
-
-  @Post('apply')
-  @ApiOperation({ summary: 'Apply coupon to a subtotal' })
-  apply(@Body() dto: ApplyCouponDto) {
-    return this.couponService.apply(dto);
   }
 }

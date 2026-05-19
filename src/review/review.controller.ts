@@ -1,6 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
+import { Roles } from '../auth/roles.decorator';
 import { CreateReviewDto, UpdateReviewDto } from './dto/review.dto';
 import { ReviewService } from './review.service';
 
@@ -18,31 +20,44 @@ export class ReviewController {
   }
 
   @Get('products/:productId/reviews')
+  @Public()
   @ApiOperation({ summary: 'Get approved product reviews' })
   productReviews(@Param('productId') productId: string) {
     return this.reviewService.productReviews(productId);
   }
 
   @Get('reviews/pending')
-  @ApiOperation({ summary: 'Get pending reviews' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Get pending reviews (admin only)' })
   pending() {
     return this.reviewService.pending();
   }
 
   @Patch('reviews/:id')
-  @ApiOperation({ summary: 'Update review' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Update review (admin only)' })
   update(@Param('id') id: string, @Body() dto: UpdateReviewDto) {
     return this.reviewService.update(id, dto);
   }
 
   @Patch('reviews/:id/approve')
-  @ApiOperation({ summary: 'Approve review' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Approve review (admin only)' })
   approve(@Param('id') id: string) {
     return this.reviewService.approve(id);
   }
 
   @Delete('reviews/:id')
-  @ApiOperation({ summary: 'Delete review' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'Delete review (admin only)' })
   remove(@Param('id') id: string) {
     return this.reviewService.remove(id);
   }

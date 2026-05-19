@@ -1,9 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, UseGuards } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiBearerAuth, ApiBadRequestResponse, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags, ApiConsumes } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Public } from '../auth/public.decorator';
+import { Roles } from '../auth/roles.decorator';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
-import { ApiBadRequestResponse, ApiBody, ApiNotFoundResponse, ApiOperation, ApiResponse, ApiTags, ApiConsumes } from '@nestjs/swagger';
 import { CategoryResponseDto } from './dto/category-response.dto';
 
 @ApiTags('Categories')
@@ -11,7 +14,7 @@ import { CategoryResponseDto } from './dto/category-response.dto';
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) { }
 
-  @ApiOperation({ summary: 'Create a new category' })
+  @ApiOperation({ summary: 'Create a new category (admin only)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -26,14 +29,11 @@ export class CategoryController {
       required: ['name', 'slug']
     }
   })
-  @ApiResponse({
-    status: 201,
-    description: 'Category created successfully',
-    type: CategoryResponseDto,
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid input data',
-  })
+  @ApiResponse({ status: 201, description: 'Category created successfully', type: CategoryResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid input data' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Post()
   @UseInterceptors(FileInterceptor('image'))
   create(@Body() createCategoryDto: CreateCategoryDto, @UploadedFile() image?: Express.Multer.File) {
@@ -42,34 +42,24 @@ export class CategoryController {
   }
 
   @ApiOperation({ summary: 'Get all categories' })
-  @ApiResponse({
-    status: 200,
-    description: 'Categories retrieved successfully',
-    type: [CategoryResponseDto],
-  })
+  @ApiResponse({ status: 200, description: 'Categories retrieved successfully', type: [CategoryResponseDto] })
+  @Public()
   @Get()
   findAll() {
     return this.categoryService.findAll();
   }
 
   @ApiOperation({ summary: 'Get category by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Category retrieved successfully',
-    type: CategoryResponseDto,
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid category ID',
-  })
-  @ApiNotFoundResponse({
-    description: 'Category not found',
-  })
+  @ApiResponse({ status: 200, description: 'Category retrieved successfully', type: CategoryResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid category ID' })
+  @ApiNotFoundResponse({ description: 'Category not found' })
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.categoryService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Update category by ID' })
+  @ApiOperation({ summary: 'Update category by ID (admin only)' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -83,34 +73,25 @@ export class CategoryController {
       }
     }
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Category updated successfully',
-    type: CategoryResponseDto,
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid input data or category ID',
-  })
-  @ApiNotFoundResponse({
-    description: 'Category not found',
-  })
+  @ApiResponse({ status: 200, description: 'Category updated successfully', type: CategoryResponseDto })
+  @ApiBadRequestResponse({ description: 'Invalid input data or category ID' })
+  @ApiNotFoundResponse({ description: 'Category not found' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Patch(':id')
   @UseInterceptors(FileInterceptor('image'))
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto, @UploadedFile() image?: Express.Multer.File) {
     return this.categoryService.update(id, updateCategoryDto, image);
   }
 
-  @ApiOperation({ summary: 'Delete category by ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Category deleted successfully',
-  })
-  @ApiBadRequestResponse({
-    description: 'Invalid category ID',
-  })
-  @ApiNotFoundResponse({
-    description: 'Category not found',
-  })
+  @ApiOperation({ summary: 'Delete category by ID (admin only)' })
+  @ApiResponse({ status: 200, description: 'Category deleted successfully' })
+  @ApiBadRequestResponse({ description: 'Invalid category ID' })
+  @ApiNotFoundResponse({ description: 'Category not found' })
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.categoryService.remove(id);

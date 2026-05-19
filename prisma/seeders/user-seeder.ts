@@ -103,7 +103,7 @@ export async function seedUsers() {
         });
         console.log(`✅ Created role: ${roleName}`);
       } else {
-        console.log(`ℹ️ Role already exists: ${roleName}`);
+        console.log(`ℹ️  Role already exists: ${roleName}`);
       }
 
       createdRoles.set(roleName, role.id);
@@ -112,10 +112,22 @@ export async function seedUsers() {
     // Create users
     const createdUsers: any[] = [];
     for (const userData of sampleUsers) {
-      console.log(`👤 Creating user: ${userData.name}`);
+      console.log(`👤 Upserting user: ${userData.name}`);
 
       // Hash password (using a default password for all seed users)
       const hashedPassword = await bcrypt.hash('password123', 10);
+
+      // Check if user already exists
+      const existingUser = await prisma.user.findUnique({
+        where: { email: userData.email },
+        include: { profile: true, role: true }
+      });
+
+      if (existingUser) {
+        console.log(`ℹ️  User already exists: ${userData.name} (${userData.email})`);
+        createdUsers.push(existingUser);
+        continue;
+      }
 
       const user = await prisma.user.create({
         data: {

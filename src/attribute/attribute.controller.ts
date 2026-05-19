@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
 import { AttributeService } from './attribute.service';
 import {
   CreateAttributeDto,
@@ -9,6 +11,9 @@ import {
 } from './dto/attribute.dto';
 
 @ApiTags('Attributes')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Roles('admin')
 @Controller()
 export class AttributeController {
   constructor(private readonly attributeService: AttributeService) {}
