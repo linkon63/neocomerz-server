@@ -30,7 +30,7 @@ const productInclude = {
   media: { include: { media: true }, orderBy: { sortOrder: 'asc' as const } },
   variants: {
     include: {
-      attributes: { include: { attributeValue: true } },
+      attributes: { include: { attributeValue: { include: { attribute: true } } } },
       media: { include: { media: true }, orderBy: { sortOrder: 'asc' as const } },
     },
   },
