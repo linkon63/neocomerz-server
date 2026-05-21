@@ -15,6 +15,28 @@ import {
   UpdateVariantDto,
 } from './dto/product.dto';
 
+interface DiscountAttachment {
+  id: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+}
+
+interface DiscountCandidate {
+  id: string;
+  type: 'percentage' | 'fixed';
+  value: number | string | { toNumber(): number };
+}
+
+interface DiscountableProduct {
+  id: string;
+  variants?: Array<{ price: number | string | { toNumber(): number } }>;
+}
+
+interface VariantDiscount {
+  discountAmount: number;
+  discountedPrice: number;
+}
+
 const productInclude = {
   brand: true,
   category: true,
@@ -71,7 +93,9 @@ export class ProductService {
       this.prisma.product.count({ where }),
     ]);
 
-    return { data, meta: { page, limit, total } };
+    const enriched = await this.enrichWithDiscounts(data);
+
+    return { data: enriched, meta: { page, limit, total } };
   }
 
   async findOne(id: string) {
@@ -80,7 +104,7 @@ export class ProductService {
       include: productInclude,
     });
     if (!product) throw new NotFoundException(`Product with ID ${id} not found`);
-    return product;
+    return this.enrichWithDiscounts(product);
   }
 
   async findBySlug(slug: string) {
@@ -89,7 +113,7 @@ export class ProductService {
       include: productInclude,
     });
     if (!product) throw new NotFoundException(`Product with slug ${slug} not found`);
-    return product;
+    return this.enrichWithDiscounts(product);
   }
 
   async update(id: string, dto: UpdateProductDto) {
@@ -283,6 +307,93 @@ export class ProductService {
     await this.findVariant(id);
     await this.prisma.productVariant.delete({ where: { id } });
     return { message: 'Variant deleted successfully' };
+  }
+
+  private async enrichWithDiscounts<T extends DiscountableProduct | DiscountableProduct[]>(
+    products: T,
+  ): Promise<T> {
+    const list: DiscountableProduct[] = Array.isArray(products) ? products : [products];
+    if (!list.length) return products;
+
+    const now = new Date();
+    const discountProducts = await this.prisma.discountProduct.findMany({
+      where: {
+        productId: { in: list.map(p => p.id).filter(Boolean) },
+        discount: {
+          status: 'active',
+          AND: [
+            { OR: [{ startDate: null }, { startDate: { lte: now } }] },
+            { OR: [{ endDate: null }, { endDate: { gte: now } }] },
+          ],
+        },
+      },
+      include: { discount: true },
+    });
+
+    if (!discountProducts.length) return products;
+
+    const discountMap = new Map<string, DiscountCandidate[]>();
+    for (const { productId, discount } of discountProducts) {
+      const existing = discountMap.get(productId);
+      if (existing) existing.push(discount as DiscountCandidate);
+      else discountMap.set(productId, [discount as DiscountCandidate]);
+    }
+
+    const enriched = list.map(product => {
+      const discounts = discountMap.get(product.id);
+      if (!discounts?.length) return product;
+
+      const best = this.pickBestDiscount(discounts, product.variants);
+      if (!best) return product;
+
+      return {
+        ...product,
+        discount: {
+          id: best.id,
+          type: best.type,
+          value: Number(best.value),
+        } as DiscountAttachment,
+        variants: product.variants?.map(v => {
+          const price = Number(v.price);
+          const { discountAmount, discountedPrice } = this.calculateDiscount(
+            price,
+            best.type,
+            Number(best.value),
+          );
+          return { ...v, discountAmount, discountedPrice };
+        }),
+      };
+    });
+
+    return (Array.isArray(products) ? enriched : enriched[0]) as T;
+  }
+
+  private pickBestDiscount(
+    discounts: DiscountCandidate[],
+    variants: Array<{ price: number | string | { toNumber(): number } }> | undefined,
+  ) {
+    if (discounts.length === 1) return discounts[0];
+    const lowestPrice = variants?.length
+      ? Math.min(...variants.map(v => Number(v.price)))
+      : 0;
+    return discounts.reduce((best, current) => {
+      const amount = (d: DiscountCandidate) =>
+        d.type === 'percentage'
+          ? lowestPrice * (Number(d.value) / 100)
+          : Number(d.value);
+      return amount(current) > amount(best) ? current : best;
+    });
+  }
+
+  private calculateDiscount(price: number, type: 'percentage' | 'fixed', value: number) {
+    const discountAmount = type === 'percentage'
+      ? price * (value / 100)
+      : value;
+    const actualDiscount = Math.min(discountAmount, price);
+    return {
+      discountAmount: Math.round(actualDiscount * 100) / 100,
+      discountedPrice: Math.round((price - actualDiscount) * 100) / 100,
+    };
   }
 
   private async ensureBrandCategoryAndUnit(brandId: string, categoryId: string, unitId?: string) {
