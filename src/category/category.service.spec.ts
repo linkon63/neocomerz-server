@@ -56,6 +56,7 @@ describe('CategoryService', () => {
         updatedAt: new Date(),
       };
 
+      prisma.category.findUnique.mockResolvedValue({ id: 'parent-uuid' });
       prisma.category.create.mockResolvedValue(expectedCategory);
 
       const result = await service.create(createCategoryDto);
@@ -86,6 +87,7 @@ describe('CategoryService', () => {
         updatedAt: new Date(),
       };
 
+      prisma.category.findUnique.mockResolvedValue({ id: 'parent-uuid' });
       prisma.category.create.mockResolvedValue(expectedCategory);
 
       const result = await service.create(createCategoryDto);

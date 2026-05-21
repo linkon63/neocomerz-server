@@ -1,3 +1,7 @@
+jest.mock('./brands.service', () => ({
+  BrandsService: class BrandsService {},
+}));
+
 import { Test, TestingModule } from '@nestjs/testing';
 import { BrandsService } from './brands.service';
 
@@ -6,7 +10,12 @@ describe('BrandsService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [BrandsService],
+      providers: [
+        {
+          provide: BrandsService,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<BrandsService>(BrandsService);

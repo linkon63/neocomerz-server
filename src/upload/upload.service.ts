@@ -42,7 +42,10 @@ export class UploadService {
     fs.writeFileSync(filePath, file.buffer);
 
     // Return public URL
-    const baseUrl = this.configService.get<string>('BASE_URL', 'http://localhost:3000');
+    const baseUrl = this.configService.get<string>(
+      'BASE_URL',
+      `http://localhost:${this.configService.get<string>('PORT', '3000')}`,
+    );
     return `${baseUrl}/${folder}/${fileName}`;
   }
 
@@ -88,8 +91,13 @@ export class UploadService {
 
   private async deleteFromLocal(fileUrl: string): Promise<void> {
     try {
-      const baseUrl = this.configService.get<string>('BASE_URL', 'http://localhost:3000');
-      const relativePath = fileUrl.replace(baseUrl, '');
+      const baseUrl = this.configService.get<string>(
+        'BASE_URL',
+        `http://localhost:${this.configService.get<string>('PORT', '3000')}`,
+      );
+      const relativePath = fileUrl.startsWith('http')
+        ? new URL(fileUrl).pathname
+        : fileUrl.replace(baseUrl, '');
       const filePath = path.join(process.cwd(), 'public', relativePath);
 
       if (fs.existsSync(filePath)) {

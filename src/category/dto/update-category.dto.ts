@@ -1,5 +1,7 @@
 import { PartialType, ApiProperty } from '@nestjs/swagger';
 import { CreateCategoryDto } from './create-category.dto';
+import { IsString, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
     @ApiProperty({
@@ -7,6 +9,9 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
         example: 'Updated Electronics',
         required: false
     })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     name?: string;
 
     @ApiProperty({
@@ -14,6 +19,9 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
         example: 'updated-electronics',
         required: false
     })
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }) => typeof value === 'string' ? value.trim() : value)
     slug?: string;
 
     @ApiProperty({
@@ -22,5 +30,26 @@ export class UpdateCategoryDto extends PartialType(CreateCategoryDto) {
         required: false,
         nullable: true
     })
-    parentId?: string;
+    @IsString()
+    @IsOptional()
+    @Transform(({ value }) => value === '' ? null : value)
+    parentId?: string | null;
+
+    @ApiProperty({
+        description: 'Category image file',
+        required: false,
+        type: 'string',
+        format: 'binary'
+    })
+    @IsOptional()
+    image?: Express.Multer.File;
+
+    @ApiProperty({
+        description: 'Image URL to remove (set to empty string to remove)',
+        required: false,
+        nullable: true
+    })
+    @IsString()
+    @IsOptional()
+    imageUrl?: string | null;
 }
