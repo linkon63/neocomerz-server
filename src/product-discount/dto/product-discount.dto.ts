@@ -2,6 +2,8 @@ import { ApiProperty, ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsArray, IsDateString, IsIn, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator';
 
+export type DiscountScopeDto = 'all' | 'product' | 'category' | 'brand';
+
 export class CreateProductDiscountDto {
   @ApiProperty({ example: 'Summer Sale 2026' })
   @IsString()
@@ -17,10 +19,28 @@ export class CreateProductDiscountDto {
   @Min(0)
   value: number;
 
-  @ApiProperty({ type: [String], example: ['product-uuid-1', 'product-uuid-2'] })
+  @ApiPropertyOptional({ enum: ['all', 'product', 'category', 'brand'], default: 'product' })
+  @IsOptional()
+  @IsIn(['all', 'product', 'category', 'brand'])
+  scope?: DiscountScopeDto;
+
+  @ApiPropertyOptional({ type: [String], example: ['product-uuid-1', 'product-uuid-2'] })
+  @IsOptional()
   @IsArray()
   @IsUUID(undefined, { each: true })
-  productIds: string[];
+  productIds?: string[];
+
+  @ApiPropertyOptional({ type: [String], example: ['category-uuid-1'] })
+  @IsOptional()
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  categoryIds?: string[];
+
+  @ApiPropertyOptional({ type: [String], example: ['brand-uuid-1'] })
+  @IsOptional()
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  brandIds?: string[];
 
   @ApiPropertyOptional({ example: '2026-06-01T00:00:00.000Z' })
   @IsOptional()

@@ -62,6 +62,13 @@ enum DiscountType {
   fixed
 }
 
+enum DiscountScope {
+  all
+  product
+  category
+  brand
+}
+
 enum PaymentTransactionStatus {
   pending
   success
@@ -226,7 +233,8 @@ model Category {
   parentId String?
   children Category[] @relation("CategoryHierarchy")
 
-  products Product[]
+  products           Product[]
+  discountCategories DiscountCategory[]
 
   @@map("categories")
 }
@@ -238,7 +246,8 @@ model Brand {
   logoUrl   String?  @map("logo_url")
   createdAt DateTime @default(now()) @map("created_at")
 
-  products Product[]
+  products       Product[]
+  discountBrands DiscountBrand[]
 
   @@map("brands")
 }
@@ -631,35 +640,35 @@ model ActivityLog {
 // ======================================================
 
 model Setting {
-  id        String   @id @default(uuid())
-  shopName  String?   @map("shop_name")
-  logo      String?
-  icon      String?
-  copyrightYear String? @map("copyright_year") @default("2026")
-  parentCompany       String? @map("parent_company")
-  parentCompanyLink   String? @map("parent_company_link")
-  slogan    String?
-  contactNumber Json?  @map("contact_number")
-  email     Json?
-  socialContact Json?  @map("social_contact")
-  currency  String   @default("BDT")
-  language  String   @default("en")
-  fraudCheckApiKey           String?  @map("fraud_check_api_key")
-  isFraudChecking            Boolean  @default(false) @map("is_fraud_checking")
-  fraudCheckingThreshold     Int      @default(0) @map("fraud_checking_threshold")
-  fraudCheckingSuccessRate   Decimal? @map("fraud_checking_success_rate") @db.Decimal(5, 2)
+  id                       String   @id @default(uuid())
+  shopName                 String?  @map("shop_name")
+  logo                     String?
+  icon                     String?
+  copyrightYear            String?  @default("2026") @map("copyright_year")
+  parentCompany            String?  @map("parent_company")
+  parentCompanyLink        String?  @map("parent_company_link")
+  slogan                   String?
+  contactNumber            Json?    @map("contact_number")
+  email                    Json?
+  socialContact            Json?    @map("social_contact")
+  currency                 String   @default("BDT")
+  language                 String   @default("en")
+  fraudCheckApiKey         String?  @map("fraud_check_api_key")
+  isFraudChecking          Boolean  @default(false) @map("is_fraud_checking")
+  fraudCheckingThreshold   Int      @default(0) @map("fraud_checking_threshold")
+  fraudCheckingSuccessRate Decimal? @map("fraud_checking_success_rate") @db.Decimal(5, 2)
 
-  deliveryChargeInside       Decimal? @map("delivery_charge_inside") @default(0) @db.Decimal(10, 2)
-  deliveryChargeOutside      Decimal? @map("delivery_charge_outside") @default(0) @db.Decimal(10, 2)
-  deliveryChargeNearCity     Decimal? @map("delivery_charge_near_city") @default(0) @db.Decimal(10, 2)
-  youtubeUrl                 String?  @map("youtube_url")
-  youtubeThumbnailImage      String?  @map("youtube_thumbnail_image")
-  youtubeTitle               String?  @map("youtube_title")
-  youtubeDescription         String?  @map("youtube_description")
-  youtubeMetaData            Json?    @map("youtube_meta_data")
+  deliveryChargeInside   Decimal? @default(0) @map("delivery_charge_inside") @db.Decimal(10, 2)
+  deliveryChargeOutside  Decimal? @default(0) @map("delivery_charge_outside") @db.Decimal(10, 2)
+  deliveryChargeNearCity Decimal? @default(0) @map("delivery_charge_near_city") @db.Decimal(10, 2)
+  youtubeUrl             String?  @map("youtube_url")
+  youtubeThumbnailImage  String?  @map("youtube_thumbnail_image")
+  youtubeTitle           String?  @map("youtube_title")
+  youtubeDescription     String?  @map("youtube_description")
+  youtubeMetaData        Json?    @map("youtube_meta_data")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("settings")
 }
@@ -669,16 +678,16 @@ model Setting {
 // ======================================================
 
 model Policy {
-  id         String @id @default(uuid())
-  delivery   Json?
-  return     Json?
-  refund     Json?
+  id           String @id @default(uuid())
+  delivery     Json?
+  return       Json?
+  refund       Json?
   cancellation Json?
-  privacy    Json?
-  terms      Json?
+  privacy      Json?
+  terms        Json?
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("policies")
 }
@@ -688,13 +697,13 @@ model Policy {
 // ======================================================
 
 model Section {
-  id        String   @id @default(uuid())
-  position  Int
-  title     String
-  page      String
+  id       String @id @default(uuid())
+  position Int
+  title    String
+  page     String
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   campaigns Campaign[]
 
@@ -706,17 +715,17 @@ model Section {
 // ======================================================
 
 model Campaign {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
-  hasDiscount Boolean  @default(false) @map("has_discount")
-  discountId  String?  @map("discount_id")
-  startAt     DateTime @map("start_at")
+  hasDiscount Boolean   @default(false) @map("has_discount")
+  discountId  String?   @map("discount_id")
+  startAt     DateTime  @map("start_at")
   endAt       DateTime? @map("end_at")
-  status      String   @default("active")
+  status      String    @default("active")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   section   Section          @relation(fields: [sectionId], references: [id])
   sectionId String           @map("section_id")
@@ -731,11 +740,11 @@ model Campaign {
 // ======================================================
 
 model CampaignImage {
-  id         String   @id @default(uuid())
-  images     Json?
+  id     String @id @default(uuid())
+  images Json?
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   campaign   Campaign @relation(fields: [campaignId], references: [id])
   campaignId String   @map("campaign_id")
@@ -748,19 +757,22 @@ model CampaignImage {
 // ======================================================
 
 model ProductDiscount {
-  id        String       @id @default(uuid())
+  id        String        @id @default(uuid())
   name      String
   type      DiscountType
-  value     Decimal      @db.Decimal(10, 2)
-  startDate DateTime?    @map("start_date")
-  endDate   DateTime?    @map("end_date")
-  status    String       @default("active")
+  value     Decimal       @db.Decimal(10, 2)
+  scope     DiscountScope @default(product)
+  startDate DateTime?     @map("start_date")
+  endDate   DateTime?     @map("end_date")
+  status    String        @default("active")
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @default(now()) @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  products  DiscountProduct[]
-  campaigns Campaign[]
+  products   DiscountProduct[]
+  categories DiscountCategory[]
+  brands     DiscountBrand[]
+  campaigns  Campaign[]
 
   @@map("product_discounts")
 }
@@ -773,4 +785,24 @@ model DiscountProduct {
 
   @@id([discountId, productId])
   @@map("discount_products")
+}
+
+model DiscountCategory {
+  discount   ProductDiscount @relation(fields: [discountId], references: [id])
+  discountId String          @map("discount_id")
+  category   Category        @relation(fields: [categoryId], references: [id])
+  categoryId String          @map("category_id")
+
+  @@id([discountId, categoryId])
+  @@map("discount_categories")
+}
+
+model DiscountBrand {
+  discount   ProductDiscount @relation(fields: [discountId], references: [id])
+  discountId String          @map("discount_id")
+  brand      Brand           @relation(fields: [brandId], references: [id])
+  brandId    String          @map("brand_id")
+
+  @@id([discountId, brandId])
+  @@map("discount_brands")
 }

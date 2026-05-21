@@ -25,10 +25,13 @@ interface DiscountCandidate {
   id: string;
   type: 'percentage' | 'fixed';
   value: number | string | { toNumber(): number };
+  scope?: 'all' | 'product' | 'category' | 'brand';
 }
 
 interface DiscountableProduct {
   id: string;
+  brandId?: string;
+  categoryId?: string;
   variants?: Array<{ price: number | string | { toNumber(): number } }>;
 }
 
@@ -54,7 +57,21 @@ export class ProductService {
   ) {}
 
   async create(dto: CreateProductDto) {
-    const { tagIds, ...productData } = dto;
+    const {
+      tagIds,
+      baseUnitId,
+      supplierId,
+      supplierPrice,
+      branchId,
+      channelIds,
+      vatId,
+      factor,
+      markup,
+      purchaseDate,
+      purchaseOrderReturnable,
+      includeStock,
+      ...productData
+    } = dto;
     await this.ensureBrandCategoryAndUnit(dto.brandId, dto.categoryId, dto.unitId);
     return this.prisma.product.create({
       data: {
@@ -316,27 +333,39 @@ export class ProductService {
     if (!list.length) return products;
 
     const now = new Date();
-    const discountProducts = await this.prisma.discountProduct.findMany({
+    const productIds = list.map(p => p.id).filter(Boolean);
+    const categoryIds = [...new Set(list.map(p => p.categoryId).filter(Boolean))] as string[];
+    const brandIds = [...new Set(list.map(p => p.brandId).filter(Boolean))] as string[];
+
+    const discounts = await this.prisma.productDiscount.findMany({
       where: {
-        productId: { in: list.map(p => p.id).filter(Boolean) },
-        discount: {
-          status: 'active',
-          AND: [
-            { OR: [{ startDate: null }, { startDate: { lte: now } }] },
-            { OR: [{ endDate: null }, { endDate: { gte: now } }] },
-          ],
-        },
+        status: 'active',
+        AND: [
+          { OR: [{ startDate: null }, { startDate: { lte: now } }] },
+          { OR: [{ endDate: null }, { endDate: { gte: now } }] },
+        ],
+        OR: [
+          { scope: 'all' },
+          { scope: 'product', products: { some: { productId: { in: productIds } } } },
+          { scope: 'category', categories: { some: { categoryId: { in: categoryIds } } } },
+          { scope: 'brand', brands: { some: { brandId: { in: brandIds } } } },
+        ],
       },
-      include: { discount: true },
+      include: {
+        products: { select: { productId: true } },
+        categories: { select: { categoryId: true } },
+        brands: { select: { brandId: true } },
+      },
     });
 
-    if (!discountProducts.length) return products;
+    if (!discounts.length) return products;
 
     const discountMap = new Map<string, DiscountCandidate[]>();
-    for (const { productId, discount } of discountProducts) {
-      const existing = discountMap.get(productId);
-      if (existing) existing.push(discount as DiscountCandidate);
-      else discountMap.set(productId, [discount as DiscountCandidate]);
+    for (const product of list) {
+      const matchedDiscounts = discounts.filter((discount) => this.discountAppliesToProduct(discount, product));
+      if (matchedDiscounts.length) {
+        discountMap.set(product.id, matchedDiscounts as DiscountCandidate[]);
+      }
     }
 
     const enriched = list.map(product => {
@@ -383,6 +412,27 @@ export class ProductService {
           : Number(d.value);
       return amount(current) > amount(best) ? current : best;
     });
+  }
+
+  private discountAppliesToProduct(
+    discount: DiscountCandidate & {
+      products?: Array<{ productId: string }>;
+      categories?: Array<{ categoryId: string }>;
+      brands?: Array<{ brandId: string }>;
+    },
+    product: DiscountableProduct,
+  ) {
+    if (discount.scope === 'all') return true;
+    if (discount.scope === 'product') {
+      return discount.products?.some(link => link.productId === product.id);
+    }
+    if (discount.scope === 'category') {
+      return discount.categories?.some(link => link.categoryId === product.categoryId);
+    }
+    if (discount.scope === 'brand') {
+      return discount.brands?.some(link => link.brandId === product.brandId);
+    }
+    return false;
   }
 
   private calculateDiscount(price: number, type: 'percentage' | 'fixed', value: number) {

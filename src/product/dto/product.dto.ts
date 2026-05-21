@@ -67,6 +67,66 @@ export class CreateProductDto {
   @IsArray()
   @IsUUID(undefined, { each: true })
   tagIds?: string[];
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @IsString()
+  baseUnitId?: string;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @IsString()
+  supplierId?: string;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  supplierPrice?: number;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @IsString()
+  branchId?: string;
+
+  @ApiPropertyOptional({ type: [String], description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  channelIds?: string[];
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @IsString()
+  vatId?: string;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  factor?: number;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  markup?: number;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  purchaseDate?: Date;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  purchaseOrderReturnable?: boolean;
+
+  @ApiPropertyOptional({ description: 'Accepted from admin form; not persisted yet' })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  includeStock?: boolean;
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
