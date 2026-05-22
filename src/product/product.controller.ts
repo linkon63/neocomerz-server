@@ -27,11 +27,9 @@ import {
   CreateProductDto,
   CreateProductMediaDto,
   CreateVariantDto,
-  CreateVariantMediaDto,
   ProductQueryDto,
   UpdateProductDto,
   UpdateProductMediaDto,
-  UpdateVariantMediaDto,
   UpdateVariantDto,
 } from './dto/product.dto';
 
@@ -133,49 +131,6 @@ export class ProductController {
     return this.productService.removeVariant(id);
   }
 
-  @Post('variants/:variantId/media')
-  @UseGuards(JwtAuthGuard)
-  @Roles('admin')
-  @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Upload variant media' })
-  @ApiConsumes('multipart/form-data')
-  @ApiParam({ name: 'variantId' })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: { type: 'string', format: 'binary' },
-        type: { type: 'string', enum: ['image', 'video'], default: 'image' },
-        isFeatured: { type: 'boolean', default: false },
-        sortOrder: { type: 'number', default: 0 },
-      },
-      required: ['file'],
-    },
-  })
-  addVariantMedia(
-    @Param('variantId') variantId: string,
-    @Body() dto: CreateVariantMediaDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    return this.productService.addVariantMedia(variantId, dto, file);
-  }
-
-  @Patch('variant-media/:id')
-  @UseGuards(JwtAuthGuard)
-  @Roles('admin')
-  @ApiOperation({ summary: 'Update variant media flags/order' })
-  updateVariantMedia(@Param('id') id: string, @Body() dto: UpdateVariantMediaDto) {
-    return this.productService.updateVariantMedia(id, dto);
-  }
-
-  @Delete('variant-media/:id')
-  @UseGuards(JwtAuthGuard)
-  @Roles('admin')
-  @ApiOperation({ summary: 'Delete variant media and uploaded file' })
-  removeVariantMedia(@Param('id') id: string) {
-    return this.productService.removeVariantMedia(id);
-  }
-
   // ── Public read operations ───────────────────────────────────────────────
 
   @Get('products')
@@ -211,13 +166,6 @@ export class ProductController {
   @ApiOperation({ summary: 'List product variants' })
   listVariants(@Param('productId') productId: string) {
     return this.productService.listVariants(productId);
-  }
-
-  @Get('variants/:variantId/media')
-  @Public()
-  @ApiOperation({ summary: 'List variant media' })
-  listVariantMedia(@Param('variantId') variantId: string) {
-    return this.productService.listVariantMedia(variantId);
   }
 
   @Get('variants/:id')

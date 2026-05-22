@@ -35,15 +35,6 @@ export class ReviewController {
     return this.reviewService.pending();
   }
 
-  @Get('reviews/approved')
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard)
-  @Roles('admin')
-  @ApiOperation({ summary: 'Get approved reviews (admin only)' })
-  approved() {
-    return this.reviewService.approved();
-  }
-
   @Patch('reviews/:id')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)

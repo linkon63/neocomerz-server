@@ -20,6 +20,10 @@ export class CreateSupplierDto {
   @IsOptional()
   @IsString()
   address?: string;
+
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  isActive?: boolean;
 }
 
 export class UpdateSupplierDto extends PartialType(CreateSupplierDto) {}
