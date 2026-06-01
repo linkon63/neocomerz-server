@@ -31,6 +31,7 @@ import { PoliciesModule } from './policies/policies.module';
 import { SectionsModule } from './sections/sections.module';
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { WholesaleOrderRequestModule } from './wholesale-order-request/wholesale-order-request.module';
 
 @Module({
   imports: [
@@ -66,6 +67,7 @@ import { CampaignModule } from './campaign/campaign.module';
     SectionsModule,
     ProductDiscountModule,
     CampaignModule,
+    WholesaleOrderRequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],
