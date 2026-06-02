@@ -29,6 +29,7 @@ import { UnitModule } from './unit/unit.module';
 import { SettingsModule } from './settings/settings.module';
 import { PoliciesModule } from './policies/policies.module';
 import { SectionsModule } from './sections/sections.module';
+import { ReportModule } from './report/report.module';
 import { ProductDiscountModule } from './product-discount/product-discount.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { WholesaleOrderRequestModule } from './wholesale-order-request/wholesale-order-request.module';
@@ -65,6 +66,7 @@ import { WholesaleOrderRequestModule } from './wholesale-order-request/wholesale
     SettingsModule,
     PoliciesModule,
     SectionsModule,
+    ReportModule,
     ProductDiscountModule,
     CampaignModule,
     WholesaleOrderRequestModule,
