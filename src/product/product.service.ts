@@ -15,6 +15,28 @@ import {
   UpdateVariantDto,
 } from './dto/product.dto';
 
+interface DiscountAttachment {
+  id: string;
+  type: 'percentage' | 'fixed';
+  value: number;
+}
+
+interface DiscountCandidate {
+  id: string;
+  type: 'percentage' | 'fixed';
+  value: number | string | { toNumber(): number };
+}
+
+interface DiscountableProduct {
+  id: string;
+  variants?: Array<{ price: number | string | { toNumber(): number } }>;
+}
+
+interface VariantDiscount {
+  discountAmount: number;
+  discountedPrice: number;
+}
+
 const productInclude = {
   brand: true,
   category: true,
@@ -287,15 +309,16 @@ export class ProductService {
     return { message: 'Variant deleted successfully' };
   }
 
-  private async enrichWithDiscounts(products: any | any[]) {
-    const list = Array.isArray(products) ? products : [products];
-    const productIds = list.map((p: any) => p.id).filter(Boolean);
-    if (!productIds.length) return products;
+  private async enrichWithDiscounts<T extends DiscountableProduct | DiscountableProduct[]>(
+    products: T,
+  ): Promise<T> {
+    const list: DiscountableProduct[] = Array.isArray(products) ? products : [products];
+    if (!list.length) return products;
 
     const now = new Date();
     const discountProducts = await this.prisma.discountProduct.findMany({
       where: {
-        productId: { in: productIds },
+        productId: { in: list.map(p => p.id).filter(Boolean) },
         discount: {
           status: 'active',
           AND: [
@@ -307,56 +330,58 @@ export class ProductService {
       include: { discount: true },
     });
 
-    const discountMap = new Map<string, any[]>();
-    for (const dp of discountProducts) {
-      const arr = discountMap.get(dp.productId) || [];
-      arr.push(dp.discount);
-      discountMap.set(dp.productId, arr);
+    if (!discountProducts.length) return products;
+
+    const discountMap = new Map<string, DiscountCandidate[]>();
+    for (const { productId, discount } of discountProducts) {
+      const existing = discountMap.get(productId);
+      if (existing) existing.push(discount as DiscountCandidate);
+      else discountMap.set(productId, [discount as DiscountCandidate]);
     }
 
-    for (const product of list) {
+    const enriched = list.map(product => {
       const discounts = discountMap.get(product.id);
-      if (!discounts?.length) continue;
+      if (!discounts?.length) return product;
 
-      const bestDiscount = this.pickBestDiscount(discounts, product.variants);
-      if (!bestDiscount) continue;
+      const best = this.pickBestDiscount(discounts, product.variants);
+      if (!best) return product;
 
-      product.discount = {
-        id: bestDiscount.id,
-        type: bestDiscount.type,
-        value: Number(bestDiscount.value),
-      };
-
-      if (product.variants) {
-        for (const variant of product.variants) {
-          const price = Number(variant.price);
+      return {
+        ...product,
+        discount: {
+          id: best.id,
+          type: best.type,
+          value: Number(best.value),
+        } as DiscountAttachment,
+        variants: product.variants?.map(v => {
+          const price = Number(v.price);
           const { discountAmount, discountedPrice } = this.calculateDiscount(
             price,
-            bestDiscount.type as 'percentage' | 'fixed',
-            Number(bestDiscount.value),
+            best.type,
+            Number(best.value),
           );
-          variant.discountAmount = discountAmount;
-          variant.discountedPrice = discountedPrice;
-        }
-      }
-    }
+          return { ...v, discountAmount, discountedPrice };
+        }),
+      };
+    });
 
-    return Array.isArray(products) ? list : list[0];
+    return (Array.isArray(products) ? enriched : enriched[0]) as T;
   }
 
-  private pickBestDiscount(discounts: any[], variants: any[]) {
+  private pickBestDiscount(
+    discounts: DiscountCandidate[],
+    variants: Array<{ price: number | string | { toNumber(): number } }> | undefined,
+  ) {
     if (discounts.length === 1) return discounts[0];
     const lowestPrice = variants?.length
-      ? Math.min(...variants.map((v: any) => Number(v.price)))
+      ? Math.min(...variants.map(v => Number(v.price)))
       : 0;
-    return discounts.reduce((best: any, current: any) => {
-      const currentAmount = current.type === 'percentage'
-        ? lowestPrice * (Number(current.value) / 100)
-        : Number(current.value);
-      const bestAmount = best.type === 'percentage'
-        ? lowestPrice * (Number(best.value) / 100)
-        : Number(best.value);
-      return currentAmount > bestAmount ? current : best;
+    return discounts.reduce((best, current) => {
+      const amount = (d: DiscountCandidate) =>
+        d.type === 'percentage'
+          ? lowestPrice * (Number(d.value) / 100)
+          : Number(d.value);
+      return amount(current) > amount(best) ? current : best;
     });
   }
 
