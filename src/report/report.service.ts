@@ -82,26 +82,51 @@ export class ReportService {
 
   async getUserReport(startDate?: string, endDate?: string) {
     const { start, end } = this.getDateRange(startDate, endDate);
+    const now = new Date();
 
-    const users = await this.prisma.user.findMany({
-      where: {
-        createdAt: { gte: start, lte: end },
-        deletedAt: null,
-      },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        phone: true,
-        createdAt: true,
-        role: { select: { name: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+    const weekStart = new Date(now);
+    const dayOfWeek = now.getDay();
+    const diff = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    weekStart.setDate(now.getDate() - diff);
+    weekStart.setHours(0, 0, 0, 0);
+
+    const [users, totalCustomers, newCustomersThisWeek] = await Promise.all([
+      this.prisma.user.findMany({
+        where: {
+          createdAt: { gte: start, lte: end },
+          deletedAt: null,
+          role: { name: 'user' },
+        },
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          createdAt: true,
+          role: { select: { name: true } },
+        },
+        orderBy: { createdAt: 'desc' },
+      }),
+      this.prisma.user.count({
+        where: {
+          deletedAt: null,
+          role: { name: 'user' },
+        },
+      }),
+      this.prisma.user.count({
+        where: {
+          createdAt: { gte: weekStart },
+          deletedAt: null,
+          role: { name: 'user' },
+        },
+      }),
+    ]);
 
     return {
       summary: {
         totalNewUsers: users.length,
+        totalCustomers,
+        newCustomersThisWeek,
         period: { start, end },
       },
       users: users.map((u) => ({
