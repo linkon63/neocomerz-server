@@ -283,4 +283,23 @@ export class ReportService {
       })),
     };
   }
+
+  async getOverview(startDate?: string, endDate?: string) {
+    const [sales, users, discounts, inventory, purchases] = await Promise.all([
+      this.getSalesReport(startDate, endDate),
+      this.getUserReport(startDate, endDate),
+      this.getDiscountReport(startDate, endDate),
+      this.getInventoryReport(startDate, endDate),
+      this.getPurchaseReport(startDate, endDate),
+    ]);
+
+    return {
+      period: sales.summary.period,
+      sales: sales.summary,
+      customers: users.summary,
+      discounts: discounts.summary,
+      inventory: inventory.summary,
+      purchases: purchases.summary,
+    };
+  }
 }

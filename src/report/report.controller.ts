@@ -52,4 +52,12 @@ export class ReportController {
   discounts(@Query() query: ReportQueryDto) {
     return this.reportService.getDiscountReport(query.startDate, query.endDate);
   }
+
+  @Get('overview')
+  @ApiOperation({ summary: 'Get consolidated overview of all reports' })
+  @ApiQuery({ name: 'startDate', required: false })
+  @ApiQuery({ name: 'endDate', required: false })
+  overview(@Query() query: ReportQueryDto) {
+    return this.reportService.getOverview(query.startDate, query.endDate);
+  }
 }
