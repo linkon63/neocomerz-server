@@ -54,16 +54,48 @@ export class ProductService {
   ) {}
 
   async create(dto: CreateProductDto) {
-    const { tagIds, ...productData } = dto;
+    const { tagIds, variants, ...productData } = dto;
     await this.ensureBrandCategoryAndUnit(dto.brandId, dto.categoryId, dto.unitId);
-    return this.prisma.product.create({
-      data: {
-        ...productData,
-        tags: tagIds?.length
-          ? { connect: tagIds.map((id) => ({ id })) }
-          : undefined,
-      },
-      include: productInclude,
+
+    return this.prisma.$transaction(async (tx) => {
+      const product = await tx.product.create({
+        data: {
+          ...productData,
+          tags: tagIds?.length
+            ? { connect: tagIds.map((id) => ({ id })) }
+            : undefined,
+        },
+      });
+
+      if (variants?.length) {
+        for (const v of variants) {
+          const { attributeValueIds, ...variantData } = v;
+          await tx.productVariant.create({
+            data: {
+              ...variantData,
+              productId: product.id,
+              attributes: attributeValueIds?.length
+                ? { create: attributeValueIds.map((id) => ({ attributeValueId: id })) }
+                : undefined,
+            },
+          });
+        }
+      } else {
+        await tx.productVariant.create({
+          data: {
+            sku: `${product.slug}-default`,
+            price: 0,
+            stockQuantity: 0,
+            isDefault: true,
+            productId: product.id,
+          },
+        });
+      }
+
+      return tx.product.findUniqueOrThrow({
+        where: { id: product.id },
+        include: productInclude,
+      });
     });
   }
 
@@ -118,7 +150,7 @@ export class ProductService {
 
   async update(id: string, dto: UpdateProductDto) {
     await this.findOne(id);
-    const { tagIds, ...productData } = dto;
+    const { tagIds, variants, ...productData } = dto;
     if (dto.brandId || dto.categoryId || dto.unitId) {
       const current = await this.prisma.product.findUniqueOrThrow({ where: { id } });
       await this.ensureBrandCategoryAndUnit(
