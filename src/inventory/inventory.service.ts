@@ -7,62 +7,17 @@ export class InventoryService {
   constructor(private readonly prisma: PrismaService) {}
 
   async findAll(sort?: string) {
-    const products = await this.prisma.product.findMany({
-      include: { variants: true },
-      orderBy: { createdAt: 'desc' },
+    const variants = await this.prisma.productVariant.findMany({
+      include: {
+        product: {
+          select: { id: true, name: true, slug: true, status: true },
+        },
+      },
+      orderBy: { product: { createdAt: 'desc' } },
     });
 
-    const rows: Array<{
-      id: string | null;
-      sku: string | null;
-      price: string | null;
-      cost: string | null;
-      stockQuantity: number;
-      stockAlertThreshold: number;
-      isDefault: boolean;
-      product: { id: string; name: string; slug: string; status: string };
-    }> = [];
-
-    for (const product of products) {
-      if (product.variants.length === 0) {
-        rows.push({
-          id: null,
-          sku: null,
-          price: null,
-          cost: null,
-          stockQuantity: 0,
-          stockAlertThreshold: 10,
-          isDefault: false,
-          product: {
-            id: product.id,
-            name: product.name,
-            slug: product.slug,
-            status: product.status,
-          },
-        });
-      } else {
-        for (const variant of product.variants) {
-          rows.push({
-            id: variant.id,
-            sku: variant.sku,
-            price: variant.price.toString(),
-            cost: variant.cost?.toString() ?? null,
-            stockQuantity: variant.stockQuantity,
-            stockAlertThreshold: variant.stockAlertThreshold,
-            isDefault: variant.isDefault,
-            product: {
-              id: product.id,
-              name: product.name,
-              slug: product.slug,
-              status: product.status,
-            },
-          });
-        }
-      }
-    }
-
     if (sort === 'lowStock') {
-      rows.sort((a, b) => {
+      variants.sort((a, b) => {
         const la = a.stockQuantity <= a.stockAlertThreshold ? 0 : 1;
         const lb = b.stockQuantity <= b.stockAlertThreshold ? 0 : 1;
         if (la !== lb) return la - lb;
@@ -70,7 +25,7 @@ export class InventoryService {
       });
     }
 
-    return rows;
+    return variants;
   }
 
   findByVariant(variantId: string) {
