@@ -3,9 +3,15 @@ import { Type } from 'class-transformer';
 import { IsIn, IsInt, IsOptional, IsString, IsUUID } from 'class-validator';
 
 export class AdjustInventoryDto {
-  @ApiProperty({ example: 'variant-uuid' })
+  @ApiPropertyOptional({ example: 'variant-uuid' })
+  @IsOptional()
   @IsUUID()
-  variantId: string;
+  variantId?: string;
+
+  @ApiPropertyOptional({ example: 'product-uuid' })
+  @IsOptional()
+  @IsUUID()
+  productId?: string;
 
   @ApiProperty({ example: 10, description: 'Positive for restock, negative for reduction' })
   @Type(() => Number)

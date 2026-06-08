@@ -1,5 +1,5 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import { ApiOperation, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AdjustInventoryDto } from './dto/inventory.dto';
 import { InventoryService } from './inventory.service';
 
@@ -10,8 +10,9 @@ export class InventoryController {
 
   @Get()
   @ApiOperation({ summary: 'List variant inventory' })
-  findAll() {
-    return this.inventoryService.findAll();
+  @ApiQuery({ name: 'sort', required: false, enum: ['lowStock'], description: 'Sort low-stock variants first' })
+  findAll(@Query('sort') sort?: string) {
+    return this.inventoryService.findAll(sort);
   }
 
   @Get('variant/:variantId')
