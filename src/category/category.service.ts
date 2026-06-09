@@ -46,6 +46,9 @@ export class CategoryService {
       where: {
         parentId: null
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
       include: {
         children: {
           include: {
