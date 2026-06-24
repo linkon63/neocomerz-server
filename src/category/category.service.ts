@@ -1,28 +1,45 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '../generated/prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { UploadService } from '../upload/upload.service';
+import { CreateCategoryDto } from './dto/create-category.dto';
+import { UpdateCategoryDto } from './dto/update-category.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly uploadService: UploadService,
-  ) { }
+  ) {}
 
-  async create(createCategoryDto: CreateCategoryDto, image?: Express.Multer.File) {
-    const { parentId, imageUrl, ...data } = createCategoryDto;
-    let finalImageUrl = imageUrl;
+  async create(
+    createCategoryDto: CreateCategoryDto,
+    image?: Express.Multer.File,
+  ) {
+    const {
+      parentId,
+      imageUrl: _imageUrl,
+      image: _image,
+      ...data
+    } = createCategoryDto;
+    // Only set imageUrl when an actual image file is uploaded; otherwise null.
+    let finalImageUrl: string | null = null;
 
     // If parentId is provided, validate that the parent category exists
     if (parentId) {
       const parentCategory = await this.prisma.category.findUnique({
-        where: { id: parentId }
+        where: { id: parentId },
       });
 
       if (!parentCategory) {
-        throw new BadRequestException(`Parent category with ID ${parentId} not found`);
+        throw new BadRequestException(
+          `Parent category with ID ${parentId} not found`,
+        );
       }
     }
 
@@ -30,37 +47,51 @@ export class CategoryService {
       finalImageUrl = await this.uploadService.uploadFile(image, 'categories');
     }
 
-    return this.prisma.category.create({
-      data: {
-        ...data,
-        imageUrl: finalImageUrl,
-        parent: parentId ? {
-          connect: { id: parentId }
-        } : undefined
+    try {
+      return await this.prisma.category.create({
+        data: {
+          ...data,
+          imageUrl: finalImageUrl,
+          parent: parentId
+            ? {
+                connect: { id: parentId },
+              }
+            : undefined,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `A category with slug "${data.slug}" already exists`,
+        );
       }
-    });
+      throw error;
+    }
   }
 
   findAll() {
     return this.prisma.category.findMany({
       where: {
-        parentId: null
+        parentId: null,
       },
       include: {
         children: {
           include: {
-            children: true
-          }
-        }
-      }
-    })
+            children: true,
+          },
+        },
+      },
+    });
   }
 
   async findOne(id: string) {
     const category = await this.prisma.category.findUnique({
       where: {
-        id
-      }
+        id,
+      },
     });
 
     if (!category) {
@@ -70,20 +101,26 @@ export class CategoryService {
     return category;
   }
 
-  async update(id: string, updateCategoryDto: UpdateCategoryDto, image?: Express.Multer.File) {
+  async update(
+    id: string,
+    updateCategoryDto: UpdateCategoryDto,
+    image?: Express.Multer.File,
+  ) {
     const existingCategory = await this.findOne(id);
-    const { parentId, imageUrl, ...data } = updateCategoryDto;
+    const { parentId, imageUrl, image: _image, ...data } = updateCategoryDto;
     let finalImageUrl: string | null | undefined = imageUrl;
 
     // If parentId is provided, validate that the parent category exists
     if (parentId !== undefined) {
       if (parentId) {
         const parentCategory = await this.prisma.category.findUnique({
-          where: { id: parentId }
+          where: { id: parentId },
         });
 
         if (!parentCategory) {
-          throw new BadRequestException(`Parent category with ID ${parentId} not found`);
+          throw new BadRequestException(
+            `Parent category with ID ${parentId} not found`,
+          );
         }
       }
     }
@@ -101,20 +138,37 @@ export class CategoryService {
       finalImageUrl = null;
     }
 
-    return this.prisma.category.update({
-      where: {
-        id
-      },
-      data: {
-        ...data,
-        imageUrl: finalImageUrl,
-        parent: parentId !== undefined ? (parentId ? {
-          connect: { id: parentId }
-        } : {
-          disconnect: true
-        }) : undefined
+    try {
+      return await this.prisma.category.update({
+        where: {
+          id,
+        },
+        data: {
+          ...data,
+          imageUrl: finalImageUrl,
+          parent:
+            parentId !== undefined
+              ? parentId
+                ? {
+                    connect: { id: parentId },
+                  }
+                : {
+                    disconnect: true,
+                  }
+              : undefined,
+        },
+      });
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          `A category with slug "${data.slug}" already exists`,
+        );
       }
-    });
+      throw error;
+    }
   }
 
   async remove(id: string) {
@@ -127,8 +181,8 @@ export class CategoryService {
 
     return this.prisma.category.delete({
       where: {
-        id
-      }
+        id,
+      },
     });
   }
 }

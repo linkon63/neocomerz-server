@@ -11,7 +11,50 @@ import {
   IsString,
   IsUUID,
   Min,
+  ValidateNested,
 } from 'class-validator';
+
+export class CreateVariantDto {
+  @ApiProperty({ example: 'IPHONE15PRO-128-BLACK' })
+  @IsString()
+  @IsNotEmpty()
+  sku: string;
+
+  @ApiProperty({ example: 1199.99 })
+  @Type(() => Number)
+  @IsNumber()
+  price: number;
+
+  @ApiPropertyOptional({ example: 900 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber()
+  cost?: number;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  stockQuantity?: number;
+
+  @ApiPropertyOptional({ default: 10 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  stockAlertThreshold?: number;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @Type(() => Boolean)
+  @IsBoolean()
+  isDefault?: boolean;
+
+  @ApiPropertyOptional({ type: [String], description: 'Attribute value UUIDs' })
+  @IsOptional()
+  @IsArray()
+  @IsUUID(undefined, { each: true })
+  attributeValueIds?: string[];
+}
 
 export class CreateProductDto {
   @ApiProperty({ example: 'iPhone 15 Pro' })
@@ -67,6 +110,13 @@ export class CreateProductDto {
   @IsArray()
   @IsUUID(undefined, { each: true })
   tagIds?: string[];
+
+  @ApiPropertyOptional({ type: [CreateVariantDto], description: 'Initial variants' })
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => CreateVariantDto)
+  variants?: CreateVariantDto[];
 }
 
 export class UpdateProductDto extends PartialType(CreateProductDto) {}
@@ -138,48 +188,6 @@ export class UpdateProductMediaDto {
   @Type(() => Number)
   @IsInt()
   sortOrder?: number;
-}
-
-export class CreateVariantDto {
-  @ApiProperty({ example: 'IPHONE15PRO-128-BLACK' })
-  @IsString()
-  @IsNotEmpty()
-  sku: string;
-
-  @ApiProperty({ example: 1199.99 })
-  @Type(() => Number)
-  @IsNumber()
-  price: number;
-
-  @ApiPropertyOptional({ example: 900 })
-  @IsOptional()
-  @Type(() => Number)
-  @IsNumber()
-  cost?: number;
-
-  @ApiPropertyOptional({ default: 0 })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  stockQuantity?: number;
-
-  @ApiPropertyOptional({ default: 10 })
-  @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  stockAlertThreshold?: number;
-
-  @ApiPropertyOptional({ default: false })
-  @IsOptional()
-  @Type(() => Boolean)
-  @IsBoolean()
-  isDefault?: boolean;
-
-  @ApiPropertyOptional({ type: [String], description: 'Attribute value UUIDs' })
-  @IsOptional()
-  @IsArray()
-  @IsUUID(undefined, { each: true })
-  attributeValueIds?: string[];
 }
 
 export class UpdateVariantDto extends PartialType(CreateVariantDto) {}

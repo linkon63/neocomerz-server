@@ -140,6 +140,7 @@ export class ProductDiscountService {
   async remove(id: string) {
     const existing = await this.prisma.productDiscount.findUnique({ where: { id } });
     if (!existing) throw new NotFoundException(`Product discount with ID ${id} not found`);
+    await this.prisma.discountProduct.deleteMany({ where: { discountId: id } });
     await this.prisma.productDiscount.delete({ where: { id } });
     return { message: 'Product discount deleted successfully' };
   }

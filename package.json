@@ -27,6 +27,7 @@
     "db:seed": "tsx prisma/seed.ts",
     "db:seed-categories": "tsx prisma/seeders/category-seeder.ts",
     "db:seed-users": "tsx prisma/seeders/user-seeder.ts",
+    "db:seed-orders": "tsx prisma/seeders/order-seeder.ts",
     "db:setup": "pnpm db:generate && pnpm db:migrate && pnpm db:seed"
   },
   "dependencies": {

@@ -1,7 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Request, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { CreateOrderDto, UpdateOrderStatusDto } from './dto/order.dto';
+import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/roles.decorator';
+import { CreateOrderDto, ListOrdersQueryDto, UpdateOrderStatusDto } from './dto/order.dto';
 import { OrderService } from './order.service';
 
 @ApiTags('Orders')
@@ -18,9 +20,11 @@ export class OrderController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Get all orders' })
-  findAll() {
-    return this.orderService.findAll();
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin')
+  @ApiOperation({ summary: 'List all orders with search, filters, and pagination (admin)' })
+  findAll(@Query() query: ListOrdersQueryDto) {
+    return this.orderService.findAll(query);
   }
 
   @Get('my-orders')

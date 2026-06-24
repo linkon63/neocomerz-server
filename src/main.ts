@@ -35,6 +35,7 @@ async function bootstrap() {
     .setTitle('NeoComerz API')
     .setDescription('E-commerce API documentation')
     .setVersion('1.0')
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
